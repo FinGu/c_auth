@@ -88,7 +88,7 @@ function send_reset_email(mysqli_wrapper $c_con, $username){
     $mail_data = array(
         "to" => $user_data["c_email"],
         "subject" => "password reset at cauth.me",
-        "message" => "Hey, here's the complete link to reset your password at cAuth : https://cauth.me/reset_password.php?code={$code}",
+        "message" => "Hey, here's the complete link to reset your password at cAuth : https://cauth.me/reset_password.php?code={$code}", //hardcoded ?!
         "headers" => 'From: no-reply@cauth.me' . "\r\n"
     );
 
