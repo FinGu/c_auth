@@ -48,8 +48,10 @@ if(isset($_POST["mng_submit"])) {
     c_functions::info_a("Updated the user data successfully", 2);
 }
 
+$DRY = "SELECT c_username FROM c_program_users WHERE c_program=?";
+
 if(isset($_POST["pause_all_users"])){
-    $u_all = $c_con->query("SELECT c_username FROM c_program_users WHERE c_program=?", [$app_to_manage])->fetch_all(1);
+    $u_all = $c_con->query($DRY, [$app_to_manage])->fetch_all(1);
 
     foreach($u_all as $u_row)
         api\admin\pause_user($c_con, $app_to_manage, $u_row["c_username"]);
@@ -58,7 +60,7 @@ if(isset($_POST["pause_all_users"])){
 }
 
 if(isset($_POST["unpause_all_users"])){
-    $u_all = $c_con->query("SELECT c_username FROM c_program_users WHERE c_program=?", [$app_to_manage])->fetch_all(1);
+    $u_all = $c_con->query($DRY, [$app_to_manage])->fetch_all(1);
 
     foreach($u_all as $u_row)
         api\admin\unpause_user($c_con, $app_to_manage, $u_row["c_username"]);
