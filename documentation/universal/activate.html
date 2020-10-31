@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Free bootstrap documentation template">
+    <title>cAuth Documentation</title>
+    <!-- using online links -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+    <link rel="stylesheet" href="//malihu.github.io/custom-scrollbar/jquery.mCustomScrollbar.min.css">
+    <!-- using local links -->
+    <!-- <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../node_modules/@fortawesome/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="../node_modules/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css"> -->
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/sidebar-themes.css"> </head>
+
+<body>
+<div class="page-wrapper toggled light-theme">
+    <nav id="sidebar" class="sidebar-wrapper">
+        <div class="sidebar-content">
+            <!-- sidebar-brand  -->
+            <div class="sidebar-item sidebar-brand text-white font-weight-bold">Documentation</div>
+            <!-- sidebar-header  -->
+            <!-- sidebar-search  -->
+            <!--<div class="sidebar-item sidebar-search">
+                <div>
+                    <div class="input-group">
+                        <input type="text" class="form-control search-menu" placeholder="Search...">
+                        <div class="input-group-append"> <span class="input-group-text">
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                            </span> </div>
+                    </div>
+                </div>
+            </div> -->
+            <!-- sidebar-menu  -->
+            <div class=" sidebar-item sidebar-menu">
+                <ul>
+                    <li class="header-menu"> <span>Main</span> </li>
+                    <li>
+                        <a href="index.html"> <i class="fa fa-folder"></i> <span class="menu-text">Getting Started</span> </a>
+                    </li>
+                    <li>
+                        <a href="login.html"> <i class="fa fa-book"></i> <span class="menu-text">Login</span> </a>
+                    </li>
+                    <li>
+                        <a href="register.html"> <i class="fa fa-calendar"></i> <span class="menu-text">Register</span> </a>
+                    </li>
+                    <li>
+                        <a href="activate.html"> <i class="fa fa-inbox"></i> <span class="menu-text">Activate</span> </a>
+                    </li>
+                    <li>
+                        <a href="log.html"> <i class="fa fa-share"></i> <span class="menu-text">Logs</span> </a>
+                    </li>
+                </ul>
+            </div>
+            <!-- sidebar-menu  -->
+        </div>
+        <!-- sidebar-footer  -->
+        <!--<div class="sidebar-footer">
+            <div class="dropdown">
+                <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="fa fa-bell"></i> <span class="badge badge-pill badge-primary notification">1</span> </a>
+                <div class="dropdown-menu notifications" aria-labelledby="dropdownMenuMessage">
+                    <div class="notifications-header"> <i class="fa fa-bell"></i> Notifications </div>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">
+                        <div class="notification-content">
+                            <div class="icon"> <i class="fas fa-check text-success border border-success"></i> </div>
+                            <div class="content">
+                                <div class="notification-detail">Download latest update </div>
+                                <div class="notification-time"> 20 minutes ago </div>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="dropdown-divider"></div> <a class="dropdown-item text-center" href="#">All notifications</a> </div>
+            </div>
+            <div>
+                <a id="pin-sidebar" href="#"> <i class="fa fa-power-off"></i> </a>
+            </div>
+            <div class="pinned-footer">
+                <a href="#"> <i class="fas fa-ellipsis-h"></i> </a>
+            </div>
+        </div> -->
+    </nav>
+    <!-- page-content  -->
+    <main class="page-content">
+        <div id="overlay" class="overlay"></div>
+        <div class="container-fluid">
+            <div class="row d-flex align-items-center p-3 border-bottom">
+                <div class="col-md-1">
+                    <a id="toggle-sidebar" class="btn rounded-0 p-3" href="#"> <i class="fas fa-bars"></i> </a>
+                </div>
+                <div class="col-md-8">
+                    <nav aria-label="breadcrumb" class="align-items-center">
+                        <a href="index.html" class="breadcrumb-back" title="Back"></a>
+                        <ol class="breadcrumb d-none d-lg-inline-flex m-0">
+                            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Main</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <div class="row p-lg-4">
+                <article class="main-content col-md-9 pr-lg-5">
+                    <!-- title -Add bootstrap helpers for spacing -->
+                    <h1 class="mb-2 mt-3">Activate</h1>
+                    <!--//title -->
+                    <p class="lead mb-3"> Simple guide on how to activate a user with the universal api</p> <hr class="my-2">
+                    <p class="lead mb-3"> name : username -> value : the username you're trying to activate the sub </p>
+                    <p class="lead mb-3"> name : password -> value : the password of the user </p>
+                    <p class="lead mb-3"> name : token -> value : the token to activate the sub</p>
+                    <p class="lead mb-3"> name : program_key -> value : the program key </p>
+                    <p class="lead mb-3"> name : api_key -> value : the program api/enc key </p>
+                    <p class="lead mb-3"> complete api link for activating the user's sub : <strong>https://cauth.me/api/uni_handler.php?type=activate</strong> </p>
+                    <hr class="my-4">
+                    <h3 class="font-weight-bold mb-2">
+                        PHP Code-Example
+                    </h3>
+
+                    <figure class="highlight">
+                        All the examples related to the universal api can be found in the php implementation located here : <strong><a href="../../classes/php.zip">PHP</a></strong><hr class="my-2">
+                        Response example : <strong>{"success":false,"response":"invalid_password","message":"The user's password is wrong"}</strong><hr class="my-2">
+                        it is a json encoded array with three elements, success, result and message.
+                    </figure>
+                </article>
+            </div>
+        </div>
+    </main>
+    <!-- page-content" -->
+</div>
+<!-- page-wrapper -->
+<!-- using online scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous">
+</script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous">
+</script>
+<script src="//malihu.github.io/custom-scrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="js/prism.min.js"></script>
+<!-- using local scripts -->
+<!-- <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+<script src="../node_modules/popper.js/dist/umd/popper.min.js"></script>
+<script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="../node_modules/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js"></script> -->
+<script src="js/main.js"></script>
+</body>
+
+</html>

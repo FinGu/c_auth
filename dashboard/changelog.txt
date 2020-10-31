@@ -1,0 +1,2 @@
+v1.1 -> Now the api initialization function uses a random iv instead of a static hardcoded one
+v1.0 => Updated the api to the 1.0 ( not beta ) version, now the api classes are object oriented, the responses are parsed with json and the messages are sent by the server
