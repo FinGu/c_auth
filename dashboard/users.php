@@ -75,7 +75,7 @@ if(isset($_POST["purge_all_users"])) {
 }
 
 if(isset($_POST["reset_all_users_hwid"])){
-    api\admin\reset_user_hwid($c_con, $app_to_manage, "what the hell am i thinking? i should've made this optional", true);
+    api\admin\reset_user_hwid($c_con, $app_to_manage, ".", true);
 
     c_functions::info_a("Reseted all users hwid successfully", 2);
 }
