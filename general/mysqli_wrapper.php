@@ -14,6 +14,10 @@
  * }
  */
 
+/*
+ * the mysqlnd driver needs to be available
+ */
+
 class mysqli_wrapper{
     private mysqli $connection;
 
