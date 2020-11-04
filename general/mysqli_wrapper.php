@@ -19,6 +19,7 @@
  */
 
 class mysqli_wrapper{
+    //private $connection;
     private mysqli $connection;
 
     public function __construct($host, $username, $password, $db_name) {
