@@ -122,6 +122,7 @@
                     <p class="lead mb-3">user_data.email is the email of the person that logged in </p> <hr class="my-2">
                     <p class="lead mb-3">user_data.expires is the expiry date (saved as DateTime[c#] or std::tm[c++]) of the person that logged in </p> <hr class="my-2">
                     <p class="lead mb-3">user_data.rank is the rank of the person that logged in </p> <hr class="my-2">
+                    <p class="lead mb-3">user_data.var is the custom variable of the person that logged in ( can be set on the panel's user page ) </p> <hr class="my-2">
                     <hr class="my-4">
                     <h3 class="font-weight-bold mb-2">
                         Code-Example
@@ -138,6 +139,7 @@
                 Console.WriteLine(auth_instance.user_data.username); <span style="color:#008000;">//writes the username</span>
                 Console.WriteLine(auth_instance.user_data.email); <span style="color:#008000;">//writes the email</span>
                 Console.WriteLine(auth_instance.user_data.expires.ToString()); <span style="color:#008000;">//writes the expiry date-time</span>
+                Console.WriteLine(auth_instance.user_data.var); <span style="color:#008000;">//writes the user variable</span>
 
                 <span style="color:#0000ff;">if</span> (auth_instance.user_data.rank == 1) <span style="color:#008000;">//check if the user rank equals to 1</span>
                     Console.WriteLine(<span style="color:#a31515;">"your rank is one"</span>);
