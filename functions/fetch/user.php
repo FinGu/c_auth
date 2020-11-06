@@ -12,7 +12,7 @@ function email_already_exists(mysqli_wrapper $c_con, $program_key, $email) {
     return $c_con->query("SELECT c_email FROM c_program_users WHERE c_program=? AND c_email=?", [$program_key, $email])->num_rows > 0;
 }
 
-function fetch_user(mysqli_wrapper $c_con, $program_key, $username){ //fetch user data using the program key and username
+function fetch_user(mysqli_wrapper $c_con, $program_key, $username){ 
     $u_query = $c_con->query("SELECT * FROM c_program_users WHERE c_program=? AND c_username=?", [$program_key, $username]);
 
     if ($u_query->num_rows === 0)

@@ -24,6 +24,7 @@ function gen_token(mysqli_wrapper $c_con, $program_key, $token_amount, $token_da
 
     for ($x = 0; $x < $token_amount; $x++) {
         $token = c_functions::xss_clean(c_functions::generate_license($token_type, $custom_mask));
+        // xss_clean bcs of the custom_mask
 
         $c_con->query("INSERT INTO c_program_tokens (c_program, c_token, c_days, c_rank) VALUES(?, ?, ?, ?)", array(
             $program_key,

@@ -21,9 +21,6 @@ function create_log(mysqli_wrapper $c_con, $program_key, $username, $message){
 }
 
 function log(mysqli_wrapper $c_con, $program_key, $username, $message) {
-    if (general\contains_bad_chars($username) || general\contains_bad_chars($message))
-        return c_responses::not_allowed_chars;
-
     $program_validation = validation\validate_program($c_con, $program_key);
 
     if ($program_validation !== c_responses::success)

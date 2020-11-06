@@ -1,8 +1,6 @@
 <?php
 
 class c_responses {
-    public const not_allowed_chars = "not_allowed_chars";
-
     public const program_doesnt_exist = "program_doesnt_exist";
 
     public const killswitch_is_enabled = "killswitch_is_enabled";

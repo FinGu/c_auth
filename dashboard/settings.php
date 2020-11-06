@@ -156,9 +156,11 @@ if(isset($_POST["update_settings"])){
                         <!-- /header menu -->
 
                         <!-- Header Menu -->
-                        <?php c_functions::display_news(); ?>
+                        <?php 
+                            c_functions::display_news();
 
-                        <?php c_functions::display_user_data($username, c_globals::get_premium()); ?>
+                            c_functions::display_user_data($username, c_globals::get_premium()); 
+                        ?> 
                         <!-- /header menu -->
                     </div>
                     <!-- Header Menu Wrapper -->

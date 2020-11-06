@@ -4,15 +4,6 @@ namespace api\general;
 use c_responses;
 use mysqli_wrapper;
 
-function fencode(array $array){
-    $ret = '';
-
-    foreach($array as $value)
-        $ret .= str_replace('|', '~', $value) . '|';
-
-    return substr($ret, 0, -1);
-}
-
 function get_enc_data(mysqli_wrapper $c_con, $program_key) { //function used to get the encryption key
     $program_check = $c_con->query("SELECT c_encryption_key FROM c_programs WHERE c_program_key=?", [$program_key]);
 
@@ -88,14 +79,4 @@ function is_killswitch_enabled(mysqli_wrapper $c_con, $program_key){ //check if 
     $program_query = $c_con->query("SELECT c_killswitch FROM c_programs WHERE c_program_key=?", [$program_key]);
 
     return (bool)$program_query->fetch_assoc()["c_killswitch"];
-}
-
-function contains_bad_chars($str){
-    if (strpos($str, '|') !== false)
-        return true;
-
-    if(strpos($str, '&') !== false)
-        return true;
-
-    return false;
 }

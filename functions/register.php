@@ -29,9 +29,6 @@ function register_user(mysqli_wrapper $c_con, $program_key, $username, $email, $
 }
 
 function register(mysqli_wrapper $c_con, $program_key, $username, $email, $password, $token, $hwid) {
-    if (general\contains_bad_chars($username) || general\contains_bad_chars($email))
-        return c_responses::not_allowed_chars;
-
     $program_validation = validation\validate_program($c_con, $program_key);
 
     if ($program_validation !== c_responses::success)

@@ -62,25 +62,25 @@ function delete_program(mysqli_wrapper $c_con, $program_owner, $program_key){
 }
 
 function update_program_data(mysqli_wrapper $c_con, array $data){
-    $DRY = static function($arg){ return "UPDATE c_programs SET {$arg}=? WHERE c_program_key=?"; };
+    $query = static function($arg){ return "UPDATE c_programs SET {$arg}=? WHERE c_program_key=?"; };
 
     $program_key = $data['program_key'];
 
     if(isset($data['api_key']))
-        $c_con->query($DRY('c_encryption_key'), [$data['api_key'], $program_key]);
+        $c_con->query($query('c_encryption_key'), [$data['api_key'], $program_key]);
 
     if(isset($data['expiration_minutes']))
-        $c_con->query($DRY('c_sem'), [$data['expiration_minutes'], $program_key]);
+        $c_con->query($query('c_sem'), [$data['expiration_minutes'], $program_key]);
 
     if(isset($data['version']))
-        $c_con->query($DRY('c_version'), [$data['version'], $program_key]);
+        $c_con->query($query('c_version'), [$data['version'], $program_key]);
 
     if(isset($data['download_link']))
-        $c_con->query($DRY('c_dl'), [$data['download_link'], $program_key]);
+        $c_con->query($query('c_dl'), [$data['download_link'], $program_key]);
 
-    $c_con->query($DRY('c_killswitch'), [isset($data['killswitch']) ? '1' : '0', $program_key]);
+    $c_con->query($query('c_killswitch'), [isset($data['killswitch']) ? '1' : '0', $program_key]);
 
-    $c_con->query($DRY('c_hwide'), [isset($data['hwid']) ? '1' : '0' , $program_key]);
+    $c_con->query($query('c_hwide'), [isset($data['hwid']) ? '1' : '0' , $program_key]);
 
     return c_responses::success;
 }

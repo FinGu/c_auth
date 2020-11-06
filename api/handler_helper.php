@@ -1,15 +1,22 @@
 <?php
 
-function wrap_init(mysqli_wrapper $c_con, $version, $api_version, $program_key, $session_iv){
+function wrap_init(mysqli_wrapper $c_con, $version, $api_version, $program_key, $session_iv){       
     $result = api\init($c_con, $version, $api_version, $program_key, $session_iv);
 
     if(!is_array($result))
         return c_responses::wrapper($result);
 
     $rsp = $result[0];
+     
+    $vl = ''; 
 
-    return c_responses::wrapper(
-        api\general\fencode($result),
+    foreach($result as $value)
+        $vl .= $value . '|';
+
+    $vl = substr($vl, 0, -1);
+
+    return c_responses::wrapper( 
+        $vl,
         c_responses::switcher($rsp),
         $rsp === "started_program"
     );

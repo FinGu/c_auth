@@ -14,26 +14,33 @@ if(!$app_to_manage)
     header("Location: index.php");
 
 if(isset($_POST["mng_submit"])) {
+    $query = static function($to_update) { return "UPDATE c_program_users SET {$to_update}=? WHERE c_program=?" };
+
     $user_to_manage = encryption::static_decrypt($_POST["manage_user"]);
 
     if (isset($_POST["reset_hwid"]))
         api\admin\reset_user_hwid($c_con, $app_to_manage, $user_to_manage);
 
-    if (!empty($_POST["rank_value"]))
-        $c_con->query("UPDATE c_program_users SET c_rank=? WHERE c_program=?", [filter_var($_POST["rank_value"], FILTER_SANITIZE_NUMBER_INT), $app_to_manage]); //change the user's rank value
+    if (!empty($_POST["rank_value"])){
+        $rank = filter_var($_POST['rank_value'], FILTER_SANITIZE_NUMBER_INT);
+
+        $c_con->query($query('c_rank'), [$rank, $app_to_manage]);
+    }
 
     if (!empty($_POST["variable_value"]))
         api\admin\edit_user_var($c_con, $app_to_manage, $_POST["variable_value"], $user_to_manage);
 
-    if (!empty($_POST["password_value"]))
-        $c_con->query("UPDATE c_program_users SET c_password=? WHERE c_program=?", [password_hash($_POST["password_value"], PASSWORD_BCRYPT), $app_to_manage]);
+    if (!empty($_POST["password_value"])) {
+        $hashed_password = password_hash($_POST['password_value'], PASSWORD_BCRYPT);
+
+        $c_con->query($query('c_password'), [$hashed_password, $app_to_manage]);
+    }
 
     if (!empty($_POST["timestamp_value"])) {
-        if (c_functions::is_valid_timestamp($_POST["timestamp_value"])) {
-            $c_con->query("UPDATE c_program_users SET c_expires=? WHERE c_program=?", [$_POST["timestamp_value"], $app_to_manage]);
-        } else {
-            c_functions::info_a("Not a valid timestamp", 3);
-        }
+        $new_timestamp = $_POST['timestamp_value'];
+
+        if(c_functions::is_valid_timestamp($new_timestamp))
+            $c_con->query($query('c_expires'), [$new_timestamp, $app_to_manage]);
     }
 
     if (isset($_POST["pause_user"])) //pause/unpause user
@@ -48,24 +55,19 @@ if(isset($_POST["mng_submit"])) {
     c_functions::info_a("Updated the user data successfully", 2);
 }
 
-$DRY = "SELECT c_username FROM c_program_users WHERE c_program=?";
+if(isset($_POST['pause_all_users']) || isset($_POST['unpause_all_users'])){
+    $users = $c_con->query('SELECT c_username FROM c_program_users WHERE c_program=?', [$app_to_manage])->fetch_all(1);
 
-if(isset($_POST["pause_all_users"])){
-    $u_all = $c_con->query($DRY, [$app_to_manage])->fetch_all(1);
+    $pause = isset($_POST['pause_all_users']);
 
-    foreach($u_all as $u_row)
-        api\admin\pause_user($c_con, $app_to_manage, $u_row["c_username"]);
-
-    c_functions::info_a("All users were paused successfully", 2);
-}
-
-if(isset($_POST["unpause_all_users"])){
-    $u_all = $c_con->query($DRY, [$app_to_manage])->fetch_all(1);
-
-    foreach($u_all as $u_row)
-        api\admin\unpause_user($c_con, $app_to_manage, $u_row["c_username"]);
-
-    c_functions::info_a("All users were unpaused successfully", 2);
+    foreach($users as $user){
+        $username = $user['c_username'];
+        
+        if($pause)
+            api\admin\pause_user($c_con, $app_to_manage, $username);
+        else
+            api\admin\unpause_user($c_con, $app_to_manage, $username);    
+    }
 }
 
 if(isset($_POST["purge_all_users"])) {
@@ -222,9 +224,11 @@ if(isset($_POST["ucf_button"])) {
                         <!-- /header menu -->
 
                         <!-- Header Menu -->
-                        <?php c_functions::display_news(); ?>
+                        <?php 
+                            c_functions::display_news();
 
-                        <?php c_functions::display_user_data($username, c_globals::get_premium()); ?>
+                            c_functions::display_user_data($username, c_globals::get_premium()); 
+                        ?> 
                         <!-- /header menu -->
                     </div>
                     <!-- Header Menu Wrapper -->

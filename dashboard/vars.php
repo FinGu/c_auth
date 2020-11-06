@@ -181,9 +181,11 @@ if(isset($_POST["delete_var"])) {
                         <!-- /header menu -->
 
                         <!-- Header Menu -->
-                        <?php c_functions::display_news(); ?>
+                        <?php 
+                            c_functions::display_news();
 
-                        <?php c_functions::display_user_data(c_globals::get_username(), c_globals::get_premium()); ?>
+                            c_functions::display_user_data(c_globals::get_username(), c_globals::get_premium()); 
+                        ?> 
                         <!-- /header menu -->
                     </div>
                     <!-- Header Menu Wrapper -->

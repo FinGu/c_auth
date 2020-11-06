@@ -161,9 +161,11 @@ if (isset($_POST["generate_token"])) {
         <!-- /header menu -->
 
         <!-- Header Menu -->
-        <?php c_functions::display_news();?>
+        <?php 
+            c_functions::display_news();
 
-        <?php c_functions::display_user_data($username, c_globals::get_premium()); ?>
+            c_functions::display_user_data($username, c_globals::get_premium()); 
+        ?>
 
         <!-- /header menu -->
       </div>

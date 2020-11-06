@@ -5,7 +5,9 @@ include("c_globals.php");
 c_functions::validate_session();
 
 $c_con = get_connection();
+
 $username = c_globals::get_username();
+
 $app_to_manage = c_globals::get_program_key();
 
 if(!$app_to_manage)
@@ -190,9 +192,11 @@ if(isset($_POST["purge_unused_tokens"])) {
                         <!-- /header menu -->
 
                         <!-- Header Menu -->
-                        <?php c_functions::display_news(); ?>
+                        <?php 
+                            c_functions::display_news();
 
-                        <?php c_functions::display_user_data($username, c_globals::get_premium()); ?>
+                            c_functions::display_user_data($username, c_globals::get_premium()); 
+                        ?> 
                         <!-- /header menu -->
                     </div>
                     <!-- Header Menu Wrapper -->

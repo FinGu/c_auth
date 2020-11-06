@@ -10,12 +10,12 @@ function reset_user_hwid(mysqli_wrapper $c_con, $program_key, $username, $all = 
     if (!$all && !fetch\user_already_exists($c_con, $program_key, $username))
         return c_responses::not_valid_username;
 
-    $DRY = "UPDATE c_program_users SET c_hwid='0' WHERE c_program=?";
+    $query = "UPDATE c_program_users SET c_hwid='0' WHERE c_program=?";
 
     if($all)
-        $c_con->query($DRY, [$program_key]);
+        $c_con->query($query, [$program_key]);
     else
-        $c_con->query($DRY . ' AND c_username=?', [$program_key, $username]);
+        $c_con->query($query . ' AND c_username=?', [$program_key, $username]);
 
     return c_responses::success;
 }
@@ -33,12 +33,12 @@ function ban_user(mysqli_wrapper $c_con, $program_key, $username, $unban = false
     if (!fetch\user_already_exists($c_con, $program_key, $username))
         return c_responses::not_valid_username;
 
-    $DRY = static function($i) { return "UPDATE c_program_users SET c_banned='{$i}' WHERE c_username=? AND c_program=?"; };
+    $query = static function($i) { return "UPDATE c_program_users SET c_banned='{$i}' WHERE c_username=? AND c_program=?"; };
 
     if(!$unban)
-        $c_con->query($DRY(1), [$username, $program_key]);
+        $c_con->query($query(1), [$username, $program_key]);
     else
-        $c_con->query($DRY(0), [$username, $program_key]);
+        $c_con->query($query(0), [$username, $program_key]);
 
     return c_responses::success;
 }

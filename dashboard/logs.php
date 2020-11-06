@@ -141,9 +141,11 @@ if(isset($_POST["purge_all_logs"])){
                         <!-- /header menu -->
 
                         <!-- Header Menu -->
-                        <?php c_functions::display_news(); ?>
+                        <?php 
+                            c_functions::display_news();
 
-                        <?php c_functions::display_user_data($username, c_globals::get_premium()); ?>
+                            c_functions::display_user_data($username, c_globals::get_premium()); 
+                        ?> 
                         <!-- /header menu -->
                     </div>
                     <!-- Header Menu Wrapper -->
