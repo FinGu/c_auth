@@ -91,9 +91,7 @@ switch ($_GET["type"]) {
             'ip_address' => $user_data['c_ip']
         );
 
-        $encoded_data = json_encode($output_array);
-
-        die(c_responses::wrapper($data_to_output, $fetch_message, true));
+        die(c_responses::wrapper($output_array, $fetch_message, true));
 
     case "fetch_all_users":
         $output_array = [];
@@ -112,10 +110,8 @@ switch ($_GET["type"]) {
                 'banned' => $row['c_banned'] ? 'true' : 'false',
                 'ip_address' => $row['c_ip']
             );
-            
-        $encoded_data = json_encode($output_array);
 
-        die(c_responses::wrapper($encoded_data, $fetch_message, true));
+        die(c_responses::wrapper($output_array, $fetch_message, true));
 
     case "gen_token":
         $token_type = $_POST["token_type"] ?? 1;
@@ -126,9 +122,7 @@ switch ($_GET["type"]) {
         if (!is_array($generated_tokens))
             die(c_responses::wrapper($generated_tokens));
 
-        $encoded_data = json_encode($generated_tokens);
-
-        die(c_responses::wrapper($encoded_data, $fetch_message, true));
+        die(c_responses::wrapper($generated_tokens, $fetch_message, true));
 
     case "delete_token":
         $out = api\admin\delete_token($c_con, $program_key, $_POST["token"], $_POST['token'] === '*');
@@ -149,9 +143,7 @@ switch ($_GET["type"]) {
             'used_by' => $token_data['c_used_by']
         );
 
-        $encoded_data = json_encode($output_array);
-
-        die(c_responses::wrapper($encoded_data, $fetch_message, true));
+        die(c_responses::wrapper($output_array, $fetch_message, true));
 
     case "fetch_all_tokens":
         $output_array = [];
@@ -167,9 +159,7 @@ switch ($_GET["type"]) {
                 'used_by' => $row['c_used_by']
             );
 
-        $encoded_data = json_encode($output_array);
-
-        die(c_responses::wrapper($encoded_data, $fetch_message, true));
+        die(c_responses::wrapper($output_array, $fetch_message, true));
 
     case "fetch_all_logs":
         $rows = api\fetch\fetch_all_logs($c_con, $_POST["program_key"]);
@@ -187,9 +177,7 @@ switch ($_GET["type"]) {
                 'ip_address' => $row['c_ip']
             );
 
-        $encoded_data = json_encode($output_array);
-        
-        die(c_responses::wrapper($encoded_data, $fetch_message, true));
+        die(c_responses::wrapper($output_array, $fetch_message, true));
 
     case "delete_all_logs":
         $out = api\admin\delete_all_logs($c_con, $_POST['program_key']);
