@@ -1,23 +1,26 @@
 <?php
-include("../general/includes.php");
-include("c_globals.php");
+include '../general/includes.php';
 
-c_functions::validate_session();
+include '../session.php';
+
+session::check();
 
 $c_con = get_connection();
 
-$app_to_manage = c_globals::get_program_key();
+$app_to_manage = session::program_key();
 
 if(!$app_to_manage)
     header("Location: index.php");
 
 if(isset($_POST["new_var_value"])){
-    $var_resp = api\admin\update_var($c_con, $app_to_manage, encryption::static_decrypt($_POST["edit_var"]), $_POST["new_var_value"]);
+    $var_to_edit = encryption::static_decrypt($_POST['edit_var']);
+
+    $var_resp = api\admin\update_var($c_con, $app_to_manage, $var_to_edit, $_POST["new_var_value"]);
 
     if($var_resp === "empty_data")
-        c_functions::info_a("The new var value is empty", 3);
+        functions::box("The new var value is empty", 3);
     else
-        c_functions::info_a("Updated the var successfully", 2);
+        functions::box("Updated the var successfully", 2);
 
     unset($_POST["edit_var"]);
 }
@@ -27,31 +30,33 @@ if(isset($_POST["create_var"])) {
 
     switch ($var_resp) {
         case "empty_data":
-            c_functions::info_a("Empty data", 3);
+            functions::box("Empty data", 3);
             break;
 
         case "maximum_vars_reached":
-            c_functions::info_a("Maximum vars reached", 3);
+            functions::box("Maximum vars reached", 3);
             break;
 
         case "var_already_exists":
-            c_functions::info_a("Var already exists", 3);
+            functions::box("Var already exists", 3);
             break;
 
-        case c_responses::success:
-            c_functions::info_a("Created the var successfully", 2);
+        case responses::success:
+            functions::box("Created the var successfully", 2);
             break;
 
         default:
-            c_functions::info_a("Unknown response", 3);
+            functions::box("Unknown response", 3);
             break;
     }
 }
 
 if(isset($_POST["delete_var"])) {
-    api\admin\delete_var($c_con, $app_to_manage, encryption::static_decrypt($_POST["delete_var"]));
+    $var_to_delete = encryption::static_decrypt($_POST['delete_var']);
 
-    c_functions::info_a("Deleted the var successfully", 2);
+    api\admin\delete_var($c_con, $app_to_manage, $var_to_delete);
+
+    functions::box("Deleted the var successfully", 2);
 }
 
 ?>
@@ -182,9 +187,9 @@ if(isset($_POST["delete_var"])) {
 
                         <!-- Header Menu -->
                         <?php 
-                            c_functions::display_news();
+                            functions::display_news();
 
-                            c_functions::display_user_data(c_globals::get_username(), c_globals::get_premium()); 
+                            functions::display_user_data(session::username(), session::premium()); 
                         ?> 
                         <!-- /header menu -->
                     </div>
@@ -220,7 +225,7 @@ if(isset($_POST["delete_var"])) {
                             </a>
                         </li>
 
-                        <?php c_functions::display_classes(); ?>
+                        <?php functions::display_classes(); ?>
 
                         <li class="dt-side-nav__item">
                             <a href="https://discord.gg/DCcCgFZ" class="dt-side-nav__link">
@@ -340,10 +345,10 @@ if(isset($_POST["delete_var"])) {
                                                 $all_vars = api\fetch\fetch_all_vars($c_con, $app_to_manage);
                                                 foreach($all_vars as $pro_row){
                                                     ?><tr>
-                                                        <td><?php echo c_functions::xss_clean($pro_row["c_name"]); ?></td>
-                                                        <td><?php echo c_functions::xss_clean($pro_row["c_value"]); ?></td>
-                                                        <td><button class="btn btn-primary text-uppercase" name="edit_var" value="<?php echo encryption::static_encrypt(c_functions::xss_clean($pro_row["c_name"])); ?>"> Edit</button></td>
-                                                        <td><button class="btn btn-primary text-uppercase" name="delete_var" value="<?php echo encryption::static_encrypt(c_functions::xss_clean($pro_row["c_name"])); ?>"> Delete</button></td>
+                                                        <td><?php echo functions::xss_clean($pro_row["c_name"]); ?></td>
+                                                        <td><?php echo functions::xss_clean($pro_row["c_value"]); ?></td>
+                                                        <td><button class="btn btn-primary text-uppercase" name="edit_var" value="<?php echo encryption::static_encrypt(functions::xss_clean($pro_row["c_name"])); ?>"> Edit</button></td>
+                                                        <td><button class="btn btn-primary text-uppercase" name="delete_var" value="<?php echo encryption::static_encrypt(functions::xss_clean($pro_row["c_name"])); ?>"> Delete</button></td>
                                                     </tr>
                                                     <?php } ?>
                                                 </tbody>
@@ -355,7 +360,7 @@ if(isset($_POST["delete_var"])) {
                                                 <label for="new_var_value">New var value :</label>
                                                 <input class="form-control" type="text" placeholder="New value" name="new_var_value" id="new_var_value">
                                             </div>
-                                            <input type="hidden" name="edit_var" value="<?php echo c_functions::xss_clean($_POST["edit_var"]); ?>"/>
+                                            <input type="hidden" name="edit_var" value="<?php echo functions::xss_clean($_POST["edit_var"]); ?>"/>
                                             <button class="btn btn-primary text-uppercase"> Change</button> <br> <br>
                                         <?php } ?>
                                     </div>

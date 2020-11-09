@@ -4,7 +4,7 @@ function wrap_init(mysqli_wrapper $c_con, $version, $api_version, $program_key, 
     $result = api\init($c_con, $version, $api_version, $program_key, $session_iv);
 
     if(!is_array($result))
-        return c_responses::wrapper($result);
+        return responses::wrapper($result);
 
     $rsp = $result[0];
      
@@ -15,9 +15,9 @@ function wrap_init(mysqli_wrapper $c_con, $version, $api_version, $program_key, 
 
     $vl = substr($vl, 0, -1);
 
-    return c_responses::wrapper( 
+    return responses::wrapper( 
         $vl,
-        c_responses::switcher($rsp),
+        responses::switcher($rsp),
         $rsp === "started_program"
     );
 }
@@ -26,14 +26,14 @@ function wrap_login(mysqli_wrapper $c_con, $program_key, $username, $password, $
     $result = api\login($c_con, $program_key, $username, $password, $hwid);
 
     if(!is_array($result))
-        return c_responses::wrapper($result);
+        return responses::wrapper($result);
 
     $rsp = $result[0];
 
     return json_encode(array(
-        "success" => $rsp === c_responses::logged_in,
+        "success" => $rsp === responses::logged_in,
         "response" => $rsp,
-        "message" => c_responses::switcher($rsp),
+        "message" => responses::switcher($rsp),
         "user_data" => $result[1]
     ));
 }

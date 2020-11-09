@@ -2,18 +2,18 @@
 namespace api\validation;
 
 use api\general;
-use c_responses;
+use responses;
 use api\fetch;
 use mysqli_wrapper;
 
 function validate_program(mysqli_wrapper $c_con, $program_key) {
     if (!fetch\program_exists($c_con, $program_key))
-        return c_responses::program_doesnt_exist;
+        return responses::program_doesnt_exist;
 
     if (general\is_killswitch_enabled($c_con, $program_key))
-        return c_responses::killswitch_is_enabled;
+        return responses::killswitch_is_enabled;
 
-    return c_responses::success;
+    return responses::success;
 }
 
 function program_valid_under_name(mysqli_wrapper $c_con, $program_owner, $program_key) {

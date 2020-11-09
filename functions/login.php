@@ -1,8 +1,8 @@
 <?php
 namespace api;
 
-use c_functions;
-use c_responses;
+use functions;
+use responses;
 
 use mysqli_wrapper;
 use api\validation;
@@ -20,16 +20,16 @@ function login(mysqli_wrapper $c_con, $program_key, $username, $password, $hwid 
         return $user_data;
 
     if (!password_verify($password, $user_data["c_password"]))
-        return c_responses::password_is_wrong;
+        return responses::password_is_wrong;
 
     $user_data_validation = validation\validate_user_data($user_data);
 
-    if ($user_data_validation !== c_responses::success)
+    if ($user_data_validation !== responses::success)
         return $user_data_validation;
 
     $user_hwid_validation = validation\validate_user_hwid($c_con, $program_data, $user_data, $hwid);
 
-    if ($hwid !== null && $user_hwid_validation !== c_responses::success)
+    if ($hwid !== null && $user_hwid_validation !== responses::success)
         return $user_hwid_validation;
 
     $usr_data_arr = array(
@@ -40,7 +40,7 @@ function login(mysqli_wrapper $c_con, $program_key, $username, $password, $hwid 
         "rank" => $user_data["c_rank"]
     );
 
-    $c_con->query("UPDATE c_program_users SET c_ip=? WHERE c_program=? AND c_username=?", [c_functions::get_ip(), $program_key, $username]);
+    $c_con->query("UPDATE c_program_users SET c_ip=? WHERE c_program=? AND c_username=?", [functions::get_ip(), $program_key, $username]);
 
-    return array(c_responses::logged_in, $usr_data_arr);
+    return array(responses::logged_in, $usr_data_arr);
 }

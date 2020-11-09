@@ -1,6 +1,6 @@
 <?php
 
-class c_responses {
+class responses {
     public const program_doesnt_exist = "program_doesnt_exist";
 
     public const killswitch_is_enabled = "killswitch_is_enabled";
@@ -25,7 +25,7 @@ class c_responses {
 
     public const success = "success";
 
-    public static function switcher(/* c_responses|string */ $response) : ?string {
+    public static function switcher(/* responses|string */ $response) : ?string {
         switch ($response) {
             case self::program_doesnt_exist:
                 return "The program you tried to use doesn't exist";
@@ -95,7 +95,7 @@ class c_responses {
         }
     }
 
-    public static function wrapper(/* c_responses|string */ $response, $message = null, $force_success = false){
+    public static function wrapper(/* responses|string */ $response, $message = null, $force_success = false){
         $success = ($response === self::success || $force_success);
 
         $message = $message ?? self::switcher($response);

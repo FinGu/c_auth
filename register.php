@@ -2,16 +2,16 @@
 include_once("general/includes.php");
 
 if(isset($_POST["signup"])) {
-    if(c_functions::captcha_check(":L", $_POST["g-recaptcha-response"])) {
+    if(functions::captcha_check(":L", $_POST["g-recaptcha-response"])) {
         $register_result = api\main\register(get_connection(), $_POST["username"], $_POST["email"], $_POST["password"]);
 
-        if ($register_result !== c_responses::success)
-            c_functions::info_a($register_result, 3);
+        if ($register_result !== responses::success)
+            functions::box($register_result, 3);
         else
             header("Location: login.php");
     }
     else
-        c_functions::info_a("The captcha is wrong", 3);
+        functions::box("The captcha is wrong", 3);
 }
 ?>
 <!DOCTYPE html>

@@ -6,23 +6,23 @@ $c_con = get_connection();
 $code = $_GET["code"] ?? null;
 
 if(isset($_POST["submit_email"])) {
-    if(c_functions::captcha_check(":L", $_POST["g-recaptcha-response"])) {
+    if(functions::captcha_check(":L", $_POST["g-recaptcha-response"])) {
         $reset_result = api\main\send_reset_email($c_con, $_POST["username"]);
 
-        if($reset_result !== c_responses::success)
-            c_functions::info_a($reset_result, 3);
+        if($reset_result !== responses::success)
+            functions::box($reset_result, 3);
         else
-            c_functions::info_a($reset_result, 2);
+            functions::box($reset_result, 2);
     }
     else
-        c_functions::info_a("The captcha is wrong", 3);
+        functions::box("The captcha is wrong", 3);
 }
 
 if(isset($_POST["reset_pass"])) {
     $reset_result = api\main\reset_password_with_code($c_con, $code, $_POST["new_password"]);
 
-    if ($reset_result !== c_responses::success)
-        c_functions::info_a($reset_result, 3);
+    if ($reset_result !== responses::success)
+        functions::box($reset_result, 3);
     else
         header("Location: login.php");
 }

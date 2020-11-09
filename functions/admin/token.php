@@ -1,10 +1,11 @@
 <?php
 namespace api\admin;
 
+use functions;
+use responses; 
+
 use api\general;
 use mysqli_wrapper;
-use c_functions;
-use c_responses;
 
 function gen_token(mysqli_wrapper $c_con, $program_key, $token_amount, $token_days, $token_level, $token_type = 0, $custom_mask = null){
     $limit = general\is_premium($c_con, $program_key) ? 7500 : 75;
@@ -23,7 +24,7 @@ function gen_token(mysqli_wrapper $c_con, $program_key, $token_amount, $token_da
     $var_to_return = array();
 
     for ($x = 0; $x < $token_amount; $x++) {
-        $token = c_functions::xss_clean(c_functions::generate_license($token_type, $custom_mask));
+        $token = functions::xss_clean(functions::generate_license($token_type, $custom_mask));
         // xss_clean bcs of the custom_mask
 
         $c_con->query("INSERT INTO c_program_tokens (c_program, c_token, c_days, c_rank) VALUES(?, ?, ?, ?)", array(
@@ -43,12 +44,12 @@ function delete_token(mysqli_wrapper $c_con, $program_key, $token, $all = false)
     $token_is_valid = $c_con->query("SELECT * FROM c_program_tokens WHERE c_token=? AND c_program=?", [$token, $program_key])->num_rows !== 0;
 
     if (!$token_is_valid && !$all)
-        return c_responses::token_isnt_valid;
+        return responses::token_isnt_valid;
 
     if($all)
         $c_con->query("DELETE FROM c_program_tokens WHERE c_program=?", [$program_key]);
     else
         $c_con->query("DELETE FROM c_program_tokens WHERE c_token=? AND c_program=?", [$token, $program_key]);
 
-    return c_responses::success;
+    return responses::success;
 }

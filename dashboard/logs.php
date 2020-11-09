@@ -1,14 +1,15 @@
 <?php
-include("../general/includes.php");
-include("c_globals.php");
+include '../general/includes.php';
 
-c_functions::validate_session();
+include '../session.php';
+
+session::check();
 
 $c_con = get_connection();
 
-$username = c_globals::get_username();
+$username = session::username();
 
-$app_to_manage = c_globals::get_program_key();
+$app_to_manage = session::program_key();
 
 if(!$app_to_manage)
     header("Location: index.php");
@@ -16,7 +17,7 @@ if(!$app_to_manage)
 if(isset($_POST["purge_all_logs"])){
     api\admin\delete_all_logs($c_con, $app_to_manage);
 
-    c_functions::info_a("Purged all logs successfully", 2);
+    functions::box("Purged all logs successfully", 2);
 }
 
 ?>
@@ -142,9 +143,9 @@ if(isset($_POST["purge_all_logs"])){
 
                         <!-- Header Menu -->
                         <?php 
-                            c_functions::display_news();
+                            functions::display_news();
 
-                            c_functions::display_user_data($username, c_globals::get_premium()); 
+                            functions::display_user_data($username, session::premium()); 
                         ?> 
                         <!-- /header menu -->
                     </div>
@@ -180,7 +181,7 @@ if(isset($_POST["purge_all_logs"])){
                             </a>
                         </li>
 
-                        <?php c_functions::display_classes(); ?>
+                        <?php functions::display_classes(); ?>
 
                         <li class="dt-side-nav__item">
                             <a href="https://discord.gg/DCcCgFZ" class="dt-side-nav__link">
@@ -291,10 +292,10 @@ if(isset($_POST["purge_all_logs"])){
                                                 $all_l_values = api\fetch\fetch_all_logs($c_con, $app_to_manage);
                                                 foreach($all_l_values as $l_value){ ?>
                                                 <tr>
-                                                    <td><?php echo c_functions::xss_clean($l_value["c_username"]); ?></td>
-                                                    <td><?php echo c_functions::xss_clean($l_value["c_message"]); ?></td>
+                                                    <td><?php echo functions::xss_clean($l_value["c_username"]); ?></td>
+                                                    <td><?php echo functions::xss_clean($l_value["c_message"]); ?></td>
                                                     <td><?php echo $l_value["c_time"]; ?></td>
-                                                    <td><?php echo c_functions::xss_clean($l_value["c_ip"]); ?></td>
+                                                    <td><?php echo functions::xss_clean($l_value["c_ip"]); ?></td>
                                                 </tr>
                                                 <?php } ?>
                                                 </tbody>

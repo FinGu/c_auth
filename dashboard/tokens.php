@@ -1,14 +1,15 @@
 <?php
-include("../general/includes.php");
-include("c_globals.php");
+include '../general/includes.php';
 
-c_functions::validate_session();
+include '../session.php';
+
+session::check();
 
 $c_con = get_connection();
 
-$username = c_globals::get_username();
+$username = session::username();
 
-$app_to_manage = c_globals::get_program_key();
+$app_to_manage = session::program_key();
 
 if(!$app_to_manage)
     header("Location: index.php");
@@ -23,46 +24,48 @@ if(isset($_POST["create_token"])) {
 
     switch ($token_resp) {
         case "maximum_tokens_reached":
-            c_functions::info_a("Maximum tokens reached", 3);
+            functions::box("Maximum tokens reached", 3);
             break;
 
         case "only_500_tokens_per_time":
-            c_functions::info_a("You can gen only 500 tokens per time ( 75 if you're free )", 3);
+            functions::box("You can gen only 500 tokens per time ( 75 if you're free )", 3);
             break;
 
         case "mask_issue":
-            c_functions::info_a("No X found in the mask", 3);
+            functions::box("No X found in the mask", 3);
             break;
 
         default:
-            c_functions::info_a("Created tokens", 2);
+            functions::box("Created tokens", 2);
     }
 }
 
 if(isset($_POST["delete_token"])) {
-    api\admin\delete_token($c_con, $app_to_manage, encryption::static_decrypt($_POST["delete_token"]));
+    $token_to_delete = encryption::static_decrypt($_POST['delete_token']);
 
-    c_functions::info_a("Deleted token", 2);
+    api\admin\delete_token($c_con, $app_to_manage, $token_to_delete);
+
+    functions::box("Deleted token", 2);
 }
 
 if(isset($_POST["purge_all_tokens"])) {
     api\admin\delete_token($c_con, $app_to_manage, '', true);
 
-    c_functions::info_a("Tokens purged", 2);
+    functions::box("Tokens purged", 2);
 }
 
-$DRY = static function($arg) { return "DELETE FROM c_program_tokens WHERE c_program=? AND c_used='{$arg}'"; };
+$query = static function($arg) { return "DELETE FROM c_program_tokens WHERE c_program=? AND c_used='{$arg}'"; };
 
 if(isset($_POST["purge_used_tokens"])) {
-    $c_con->query($DRY(1), [$app_to_manage]);
+    $c_con->query($query(1), [$app_to_manage]);
 
-    c_functions::info_a("Tokens purged", 2);
+    functions::box("Tokens purged", 2);
 }
 
 if(isset($_POST["purge_unused_tokens"])) {
-    $c_con->query($DRY(0), [$app_to_manage]);
+    $c_con->query($query(0), [$app_to_manage]);
 
-    c_functions::info_a("Tokens purged", 2);
+    functions::box("Tokens purged", 2);
 }
 
 ?>
@@ -193,9 +196,9 @@ if(isset($_POST["purge_unused_tokens"])) {
 
                         <!-- Header Menu -->
                         <?php 
-                            c_functions::display_news();
+                            functions::display_news();
 
-                            c_functions::display_user_data($username, c_globals::get_premium()); 
+                            functions::display_user_data($username, session::premium()); 
                         ?> 
                         <!-- /header menu -->
                     </div>
@@ -231,7 +234,7 @@ if(isset($_POST["purge_unused_tokens"])) {
                             </a>
                         </li>
 
-                        <?php c_functions::display_classes(); ?>
+                        <?php functions::display_classes(); ?>
 
                         <li class="dt-side-nav__item">
                             <a href="https://discord.gg/DCcCgFZ" class="dt-side-nav__link">
@@ -391,12 +394,12 @@ if(isset($_POST["purge_unused_tokens"])) {
                                                 $all_t_values = api\fetch\fetch_all_tokens($c_con, $app_to_manage);
                                                 foreach($all_t_values as $t_value){ ?>
                                                 <tr>
-                                                    <td><?php echo c_functions::xss_clean($t_value["c_token"]); ?></td>
+                                                    <td><?php echo functions::xss_clean($t_value["c_token"]); ?></td>
                                                     <td><?php echo $t_value["c_days"]; ?></td>
                                                     <td><?php echo $t_value["c_rank"]; ?></td>
                                                     <td><?php echo (bool)$t_value["c_used"] ? 'true' : 'false'; ?></td>
-                                                    <td><?php echo c_functions::xss_clean($t_value["c_used_by"]); ?></td>
-                                                    <td><button class="btn btn-primary text-uppercase" name="delete_token" value="<?php echo encryption::static_encrypt(c_functions::xss_clean($t_value['c_token'])); ?>"> Delete</button></td>
+                                                    <td><?php echo functions::xss_clean($t_value["c_used_by"]); ?></td>
+                                                    <td><button class="btn btn-primary text-uppercase" name="delete_token" value="<?php echo encryption::static_encrypt(functions::xss_clean($t_value['c_token'])); ?>"> Delete</button></td>
                                                 </tr>
                                                 <?php } ?>
                                                 </tbody>

@@ -3,7 +3,7 @@ namespace api\admin;
 
 use api\general;
 use mysqli_wrapper;
-use c_responses;
+use responses;
 
 function var_already_exists(mysqli_wrapper $c_con, $program_key, $var_name){
     $var_q = $c_con->query("SELECT * FROM c_program_vars WHERE c_program=? AND c_name=?", [$program_key, $var_name]);
@@ -33,7 +33,7 @@ function create_var(mysqli_wrapper $c_con, $program_key, $var_name, $var_value){
 
     $c_con->query("INSERT INTO c_program_vars (c_program, c_name, c_value) VALUES(?, ?, ?)", [$program_key, $var_name, $var_value]);
 
-    return c_responses::success;
+    return responses::success;
 }
 
 function update_var(mysqli_wrapper $c_con, $program_key, $var_name, $new_var_value){
@@ -42,13 +42,13 @@ function update_var(mysqli_wrapper $c_con, $program_key, $var_name, $new_var_val
 
     $c_con->query("UPDATE c_program_vars SET c_value=? WHERE c_program=? AND c_name=?", [$new_var_value, $program_key, $var_name]);
 
-    return c_responses::success;
+    return responses::success;
 }
 
 function delete_var(mysqli_wrapper $c_con, $program_key, $var_name){
     $c_con->query("DELETE FROM c_program_vars WHERE c_program=? AND c_name=?", [$program_key, $var_name]);
 
-    return c_responses::success;
+    return responses::success;
 }
 
 //TODO : add this stuff to the admin api

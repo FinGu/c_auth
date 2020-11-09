@@ -1,10 +1,11 @@
 <?php
-include("../general/includes.php");
-include("c_globals.php");
+include '../general/includes.php';
 
-c_functions::validate_session();
+include '../session.php';
 
-if (!isset($_SESSION["app_to_manage"]))
+session::check();
+
+if (!session::program_key())
 	header("Location: index.php");
 
 ?>
@@ -128,9 +129,9 @@ if (!isset($_SESSION["app_to_manage"]))
 
                         <!-- Header Menu -->
                         <?php 
-                            c_functions::display_news();
+                            functions::display_news();
 
-                            c_functions::display_user_data(c_globals::get_username(), c_globals::get_premium()); 
+                            functions::display_user_data(session::username(), session::premium()); 
                         ?> 
                         <!-- /header menu -->
                     </div>
@@ -166,7 +167,7 @@ if (!isset($_SESSION["app_to_manage"]))
                             </a>
                         </li>
 
-                        <?php c_functions::display_classes(); ?>
+                        <?php functions::display_classes(); ?>
 
                         <li class="dt-side-nav__item">
                             <a href="https://discord.gg/DCcCgFZ" class="dt-side-nav__link">

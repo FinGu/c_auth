@@ -1,6 +1,7 @@
 <?php
 error_reporting(0);
-include_once("../general/includes.php");
+
+include '../general/includes.php';
 
 //handler for the admin api
 
@@ -10,7 +11,7 @@ $program_key = $_POST['program_key'] ?? 'null';
 
 $adm_result = api\admin\admin_authenticate($c_con, $_POST["admin_token"], $program_key);
 
-if($adm_result !== c_responses::success)
+if($adm_result !== responses::success)
     die($adm_result);
 
 $fetch_message = 'The data was fetched successfully';
@@ -19,18 +20,18 @@ switch ($_GET["type"]) {
     case "reset_user_hwid":
         $out = api\admin\reset_user_hwid($c_con, $program_key, $_POST['username'], $_POST['username'] === '*');
 
-        die(c_responses::wrapper($out));
+        die(responses::wrapper($out));
 
     case "edit_user_var":
         $out = api\admin\reset_user_hwid($c_con, $program_key, $_POST["new_var_value"], $_POST["username"]);
 
-        die(c_responses::wrapper($out));
+        die(responses::wrapper($out));
 
     case "pause_user_sub":
         if ($_POST["username"] !== "*") {
             $out = api\admin\pause_user($c_con, $program_key, $_POST['username']);
 
-            die(c_responses::wrapper($out));
+            die(responses::wrapper($out));
         }
 
         $query = $c_con->query("SELECT c_username FROM c_program_users WHERE c_program=?", [$_POST['program_key']]);;
@@ -40,13 +41,13 @@ switch ($_GET["type"]) {
         foreach ($rows as $row)
             api\admin\pause_user($c_con, $program_key, $rws["c_username"]);
 
-        die(c_responses::wrapper(c_responses::success));
+        die(responses::wrapper(c_responses::success));
 
     case "unpause_user_sub":
         if ($_POST['username'] !== "*"){
             $out = api\admin\unpause_user($c_con, $program_key, $_POST['username']);
 
-            die(c_responses::wrapper($out));
+            die(responses::wrapper($out));
         }
 
         $query = $c_con->query("SELECT c_username FROM c_program_users WHERE c_program=?", [$_POST['program_key']]);
@@ -56,28 +57,28 @@ switch ($_GET["type"]) {
         foreach ($rows as $row)
             api\admin\unpause_user($c_con, $program_key, $row["c_username"]);
 
-        die(c_responses::wrapper(c_responses::success));
+        die(responses::wrapper(c_responses::success));
 
     case "ban_user":
         $out = api\admin\ban_user($c_con, $program_key, $_POST['username']);
 
-        die(c_responses::wrapper($out));
+        die(responses::wrapper($out));
 
     case "unban_user":
         $out = api\admin\ban_user($c_con, $program_key, $_POST['username'], true);
 
-        die(c_responses::wrapper($out));
+        die(responses::wrapper($out));
 
     case "delete_user":
         $out = api\admin\delete_user($c_con, $program_key, $_POST['username']);
 
-        die(c_responses::wrapper($out));
+        die(responses::wrapper($out));
 
     case "fetch_single_user":
         $user_data = api\fetch\fetch_user($c_con, $program_key, $_POST['username']);
                                     
         if (!is_array($user_data))
-            die(c_responses::wrapper($user_data));
+            die(responses::wrapper($user_data));
 
         $output_array = array(
             'username' => $user_data['c_username'],
@@ -91,7 +92,7 @@ switch ($_GET["type"]) {
             'ip_address' => $user_data['c_ip']
         );
 
-        die(c_responses::wrapper($output_array, $fetch_message, true));
+        die(responses::wrapper($output_array, $fetch_message, true));
 
     case "fetch_all_users":
         $output_array = [];
@@ -111,7 +112,7 @@ switch ($_GET["type"]) {
                 'ip_address' => $row['c_ip']
             );
 
-        die(c_responses::wrapper($output_array, $fetch_message, true));
+        die(responses::wrapper($output_array, $fetch_message, true));
 
     case "gen_token":
         $token_type = $_POST["token_type"] ?? 1;
@@ -120,20 +121,20 @@ switch ($_GET["type"]) {
         $generated_tokens = api\admin\gen_token($c_con, $program_key, $_POST["token_amount"], $_POST["token_days"], $_POST["token_level"], $token_type, $custom_mask);
 
         if (!is_array($generated_tokens))
-            die(c_responses::wrapper($generated_tokens));
+            die(responses::wrapper($generated_tokens));
 
-        die(c_responses::wrapper($generated_tokens, $fetch_message, true));
+        die(responses::wrapper($generated_tokens, $fetch_message, true));
 
     case "delete_token":
         $out = api\admin\delete_token($c_con, $program_key, $_POST["token"], $_POST['token'] === '*');
 
-        die(c_responses::wrapper($out));
+        die(responses::wrapper($out));
 
     case "fetch_single_token":
         $token_data = api\fetch\fetch_token($c_con, $program_key, $_POST['token']);
 
         if (!is_array($token_data))
-            die(c_responses::wrapper($token_data));
+            die(responses::wrapper($token_data));
 
         $output_array = array(
             'token' => $token_data['c_token'],
@@ -143,7 +144,7 @@ switch ($_GET["type"]) {
             'used_by' => $token_data['c_used_by']
         );
 
-        die(c_responses::wrapper($output_array, $fetch_message, true));
+        die(responses::wrapper($output_array, $fetch_message, true));
 
     case "fetch_all_tokens":
         $output_array = [];
@@ -159,13 +160,13 @@ switch ($_GET["type"]) {
                 'used_by' => $row['c_used_by']
             );
 
-        die(c_responses::wrapper($output_array, $fetch_message, true));
+        die(responses::wrapper($output_array, $fetch_message, true));
 
     case "fetch_all_logs":
         $rows = api\fetch\fetch_all_logs($c_con, $_POST["program_key"]);
 
         if (!is_array($rows))
-            die(c_responses::wrapper($rows));
+            die(responses::wrapper($rows));
 
         $output_array = [];
 
@@ -177,10 +178,10 @@ switch ($_GET["type"]) {
                 'ip_address' => $row['c_ip']
             );
 
-        die(c_responses::wrapper($output_array, $fetch_message, true));
+        die(responses::wrapper($output_array, $fetch_message, true));
 
     case "delete_all_logs":
         $out = api\admin\delete_all_logs($c_con, $_POST['program_key']);
 
-        die(c_responses::wrapper($out));
+        die(responses::wrapper($out));
 }

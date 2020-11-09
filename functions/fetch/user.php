@@ -1,7 +1,7 @@
 <?php
 namespace api\fetch;
 
-use c_responses;
+use responses;
 use mysqli_wrapper;
 
 function user_already_exists(mysqli_wrapper $c_con, $program_key, $username) {
@@ -16,7 +16,7 @@ function fetch_user(mysqli_wrapper $c_con, $program_key, $username){
     $u_query = $c_con->query("SELECT * FROM c_program_users WHERE c_program=? AND c_username=?", [$program_key, $username]);
 
     if ($u_query->num_rows === 0)
-        return c_responses::not_valid_username;
+        return responses::not_valid_username;
 
     return $u_query->fetch_assoc();
 }

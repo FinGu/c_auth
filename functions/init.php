@@ -1,13 +1,13 @@
 <?php
 namespace api;
 
-use c_functions;
+use functions;
 
 use api\fetch;
 use mysqli_wrapper;
 
 function create_session(mysqli_wrapper $c_con, $program_key, $session_iv, $expiry) {
-    $session_id = c_functions::random_string(14); //session ID
+    $session_id = functions::random_string(14); //session ID
 
     if ($c_con->query("SELECT * FROM c_program_sessions WHERE c_program=?", [$program_key])->num_rows >= 300)
         $c_con->query("DELETE FROM c_program_sessions WHERE c_program=?", [$program_key]);
@@ -31,7 +31,7 @@ function init(mysqli_wrapper $c_con, $version, $api_version, $program_key, $sess
     if ($version != $program_data["c_version"])
         return array("wrong_version", $program_data["c_dl"]);
 
-    $iv_to_be_added = c_functions::random_string(6); // i append this string to the session_iv
+    $iv_to_be_added = functions::random_string(6); // i append this string to the session_iv
 
     $o_hash = substr(hash("sha256", $session_iv . $iv_to_be_added), 0, 16);
     //i hash the session iv + the random string to be added and get only 16 chars of the hex output

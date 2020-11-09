@@ -1,8 +1,8 @@
 <?php
 namespace api;
 
-use c_functions;
-use c_responses;
+use functions;
+use responses;
 
 use api\general;
 use api\validation;
@@ -15,15 +15,15 @@ function create_log(mysqli_wrapper $c_con, $program_key, $username, $message){
     $max_amount = general\is_premium($c_con, $program_key) ? 10000 : 500;
 
     if ($max_amount > $logs_amount)
-        $c_con->query("INSERT INTO c_program_logs(c_program, c_username, c_message, c_time, c_ip) VALUES(?, ?, ?, ?, ?)", [$program_key, $username, $message, date("Y-m-d H:i:s"), c_functions::get_ip()]);
+        $c_con->query("INSERT INTO c_program_logs(c_program, c_username, c_message, c_time, c_ip) VALUES(?, ?, ?, ?, ?)", [$program_key, $username, $message, date("Y-m-d H:i:s"), functions::get_ip()]);
 
-    return c_responses::success;
+    return responses::success;
 }
 
 function log(mysqli_wrapper $c_con, $program_key, $username, $message) {
     $program_validation = validation\validate_program($c_con, $program_key);
 
-    if ($program_validation !== c_responses::success)
+    if ($program_validation !== responses::success)
         return $program_validation;
 
     if ($username === "NONE")
@@ -34,5 +34,5 @@ function log(mysqli_wrapper $c_con, $program_key, $username, $message) {
     if (is_array($user_data))
         return create_log($c_con, $program_key, $username, $message);
 
-    return c_responses::not_valid_username;
+    return responses::not_valid_username;
 }

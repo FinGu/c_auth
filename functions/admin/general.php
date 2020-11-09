@@ -1,14 +1,14 @@
 <?php
 namespace api\admin;
 
-use c_responses;
+use responses;
 use api\general;
 use api\fetch;
 use mysqli_wrapper;
 
 function admin_authenticate(mysqli_wrapper $c_con, $admin_token, $program_key) {
     if (!fetch\program_exists($c_con, $program_key)) //if the program exists
-        return c_responses::program_doesnt_exist;
+        return responses::program_doesnt_exist;
 
     if (!general\is_premium($c_con, $program_key))
         return "not_a_premium_account";
@@ -21,5 +21,5 @@ function admin_authenticate(mysqli_wrapper $c_con, $admin_token, $program_key) {
     if ($admin_token !== $real_key)
         return "wrong_admin_token";
 
-    return c_responses::success;
+    return responses::success;
 }

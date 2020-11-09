@@ -1,9 +1,10 @@
 <?php
 namespace api\admin;
 
+use responses;
+use functions;
+
 use api\validation;
-use c_functions;
-use c_responses;
 use mysqli_wrapper;
 
 function get_all_program_amount(mysqli_wrapper $c_con, $program_owner){
@@ -39,15 +40,15 @@ function create_program(mysqli_wrapper $c_con, $program_owner, $program_name, $p
         return "program_already_exists";
 
     $c_con->query("INSERT INTO c_programs (c_owner, c_program_name, c_program_key, c_encryption_key) VALUES(?, ?, ?, ?)",
-        array($program_owner, $program_name, c_functions::random_string(43,
+        array($program_owner, $program_name, functions::random_string(43,
             "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789"), $program_api_key));
 
-    return c_responses::success;
+    return responses::success;
 }
 
 function delete_program(mysqli_wrapper $c_con, $program_owner, $program_key){
     if(!validation\program_valid_under_name($c_con, $program_owner, $program_key))
-        return c_responses::program_doesnt_exist;
+        return responses::program_doesnt_exist;
 
     $all_sqls[] = 'DELETE FROM c_programs WHERE c_program_key=?';
     $all_sqls[] = 'DELETE FROM c_program_tokens WHERE c_program=?';
@@ -58,7 +59,7 @@ function delete_program(mysqli_wrapper $c_con, $program_owner, $program_key){
     foreach($all_sqls as $sql)
         $c_con->query($sql, [$program_key]);
 
-    return c_responses::success;
+    return responses::success;
 }
 
 function update_program_data(mysqli_wrapper $c_con, array $data){
@@ -82,5 +83,5 @@ function update_program_data(mysqli_wrapper $c_con, array $data){
 
     $c_con->query($query('c_hwide'), [isset($data['hwid']) ? '1' : '0' , $program_key]);
 
-    return c_responses::success;
+    return responses::success;
 }

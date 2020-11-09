@@ -1,16 +1,6 @@
 <?php
 
-class c_functions {
-    public static function validate_session($auto = true): bool {
-        $username = encryption::static_decrypt($_SESSION["username"]);
-
-        if(isset($_SESSION['panel_access']) && $_SESSION['panel_access'] === md5($username . c_functions::get_ip()))
-            return true;
-
-        if($auto) header('Location: ../index.php');
-
-        return false;
-    }
+class functions {
 
 	public static function generate_license($type = 1, $mask = null) {
 	    $to_return = '';
@@ -123,7 +113,7 @@ class c_functions {
 		return htmlentities($s, ENT_QUOTES, 'UTF-8');
 	}
 
-	public static function info_a($str, $type = 0) : void {
+    public static function box($str, $type = 0) : void {
 		$str_type = static function($type){
             switch($type){
                 case 0:

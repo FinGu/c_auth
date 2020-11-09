@@ -15,7 +15,7 @@ $program_key = isset($_POST['program_key'])
 
 $api_key = api\general\get_enc_data($c_con, $program_key);
 
-if ($api_key === c_responses::program_doesnt_exist)
+if ($api_key === responses::program_doesnt_exist)
     die($api_key);
 
 $session_iv = ($session_id !== 'null') ? api\general\get_iv_data($c_con, $program_key, $session_id) : '1234567891234567';
@@ -63,35 +63,35 @@ switch($type){
     case 'register':
         $register_out = api\register($c_con, $program_key, $username, $email, $password, $token, $hwid);
 
-        $wrapped_register = c_responses::wrapper($register_out);
+        $wrapped_register = responses::wrapper($register_out);
 
         die($enc_instance->encrypt($wrapped_register));
 
     case 'activate':
         $activate_out = api\activate($c_con, $program_key, $username, $token);
 
-        $wrapped_activate = c_responses::wrapper($activate_out);
+        $wrapped_activate = responses::wrapper($activate_out);
 
         die($enc_instance->encrypt($wrapped_activate));
 
     case 'var':
         $var_value = api\variable($c_con, $program_key, $var_name, $username, $password, $hwid);
 
-        $ghetto_trick = c_responses::switcher($var_value);
+        $ghetto_trick = responses::switcher($var_value);
 
         if($ghetto_trick === "Unknown message" && $var_value !== "invalid_var")
-            $var_out = c_responses::wrapper($var_value, "Var was retrieved successfully", true);
+            $var_out = responses::wrapper($var_value, "Var was retrieved successfully", true);
         else if($var_value === "invalid_var")
-            $var_out = c_responses::wrapper($var_value, "Invalid variable", false);
+            $var_out = responses::wrapper($var_value, "Invalid variable", false);
         else
-            $var_out = c_responses::wrapper($var_value);
+            $var_out = responses::wrapper($var_value);
 
         die($enc_instance->encrypt($var_out));
 
     case 'log':
         $log_value = api\log($c_con, $program_key, $username, $message);
 
-        $wrapped_log = c_responses::wrapper($log_value);
+        $wrapped_log = responses::wrapper($log_value);
 
         die($enc_instance->encrypt($wrapped_log));
 

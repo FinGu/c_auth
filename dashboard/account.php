@@ -1,18 +1,19 @@
 <?php
-include("../general/includes.php");
-include("c_globals.php");
+include '../general/includes.php';
 
-c_functions::validate_session();
+include '../session.php';
+
+session::check();
 
 $c_con = get_connection();
 
-$username = c_globals::get_username();
+$username = session::username();
 
 function submit_premium(mysqli_wrapper $c_con, $username, $premium_token){
     $token_query = $c_con->query('SELECT c_used FROM c_tokens WHERE c_token=?', [$premium_token]);
 
     if($token_query->num_rows === 0 || $token_query->fetch_assoc()['c_used'] == '1'){
-        c_functions::info_a("Inexistent or used token", 3);
+        functions::box("Inexistent or used token", 3);
 
         return;
     }
@@ -23,22 +24,22 @@ function submit_premium(mysqli_wrapper $c_con, $username, $premium_token){
 
     $_SESSION["premium"] = encryption::static_encrypt(1);
 
-    c_functions::info_a("Premium activated", 2);
+    functions::box("Premium activated", 2);
 }
 
 if (isset($_POST["submit_password"])) {
     $result = api\main\change_password($c_con, $username, $_POST["old_password"], $_POST["new_password"]);
 
-    c_functions::info_a(c_responses::switcher($result));
+    functions::box(responses::switcher($result));
 }
 
 if (isset($_POST["submit_premium"]))
     submit_premium($c_con, $username, $_POST['token']);
 
 if (isset($_POST["generate_token"])) {
-	$c_con->query("UPDATE c_users SET c_admin_token=? WHERE c_username=?", [md5(c_functions::random_string()), $username]);
+    $c_con->query("UPDATE c_users SET c_admin_token=? WHERE c_username=?", [md5(functions::random_string()), $username]);
 
-	c_functions::info_a("Generated successfully", 2);
+    functions::box("Generated successfully", 2);
 }
 
 ?>
@@ -162,9 +163,9 @@ if (isset($_POST["generate_token"])) {
 
         <!-- Header Menu -->
         <?php 
-            c_functions::display_news();
+            functions::display_news();
 
-            c_functions::display_user_data($username, c_globals::get_premium()); 
+            functions::display_user_data($username, session::premium()); 
         ?>
 
         <!-- /header menu -->
@@ -201,7 +202,7 @@ if (isset($_POST["generate_token"])) {
                 </a>
             </li>
 
-            <?php c_functions::display_classes(); ?>
+            <?php functions::display_classes(); ?>
 
             <li class="dt-side-nav__item">
                 <a href="https://discord.gg/DCcCgFZ" class="dt-side-nav__link">

@@ -1,14 +1,15 @@
 <?php
-include("../general/includes.php");
-include("c_globals.php");
+include '../general/includes.php';
 
-c_functions::validate_session();
+include '../session.php';
+
+session::check();
 
 $c_con = get_connection();
 
-$username = c_globals::get_username();
+$username = session::username();
 
-$app_to_manage = c_globals::get_program_key();
+$app_to_manage = session::program_key();
 
 if(!$app_to_manage)
     header("Location: index.php");
@@ -33,7 +34,7 @@ if(isset($_POST["update_settings"])){
         'hwid' => $_POST["hwid_enabled"] ?? null
     ));
 
-    c_functions::info_a("Settings updated", 2);
+    functions::box("Settings updated", 2);
 }
 
 ?>
@@ -157,9 +158,9 @@ if(isset($_POST["update_settings"])){
 
                         <!-- Header Menu -->
                         <?php 
-                            c_functions::display_news();
+                            functions::display_news();
 
-                            c_functions::display_user_data($username, c_globals::get_premium()); 
+                            functions::display_user_data($username, session::premium()); 
                         ?> 
                         <!-- /header menu -->
                     </div>
@@ -195,7 +196,7 @@ if(isset($_POST["update_settings"])){
                             </a>
                         </li>
 
-                        <?php c_functions::display_classes(); ?>
+                        <?php functions::display_classes(); ?>
 
                         <li class="dt-side-nav__item">
                             <a href="https://discord.gg/DCcCgFZ" class="dt-side-nav__link">
@@ -279,7 +280,7 @@ if(isset($_POST["update_settings"])){
                                                 <div class="form-group">
                                                     <label for="enc_key">API/Encryption Key</label>
                                                     <input type="text" class="form-control" id="enc_key" name="enc_key" aria-describedby="help_enc"
-                                                           value="<?php echo c_functions::xss_clean($program_data["c_encryption_key"]); ?>"
+                                                           value="<?php echo functions::xss_clean($program_data["c_encryption_key"]); ?>"
                                                            placeholder="API/Encryption Key">
                                                     <small id="help_enc" class="form-text">This is the API/Encryption key of your requests.</small>
                                                 </div>
@@ -293,14 +294,14 @@ if(isset($_POST["update_settings"])){
                                                 <div class="form-group">
                                                     <label for="download_link">Download Link</label>
                                                     <input type="text" class="form-control" id="download_link" name="download_link" aria-describedby="help_dl"
-                                                           value="<?php echo c_functions::xss_clean($program_data["c_dl"]); ?>"
+                                                           value="<?php echo functions::xss_clean($program_data["c_dl"]); ?>"
                                                            placeholder="Download Link">
                                                     <small id="help_dl" class="form-text">This is the link that will be opened if the version is wrong</small>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="session_expiry_minutes">Session Expiration Minutes</label>
                                                     <input type="text" class="form-control" id="session_expiry_minutes" name="session_expiry_minutes" aria-describedby="help_sem"
-                                                           value="<?php echo c_functions::xss_clean($program_data["c_sem"]); ?>"
+                                                           value="<?php echo functions::xss_clean($program_data["c_sem"]); ?>"
                                                            placeholder="Session Expiration Minutes">
                                                     <small id="help_sem" class="form-text">This is the number of minutes that the session will last ( maximum value is 50 minutes )</small>
                                                 </div>

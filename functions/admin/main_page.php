@@ -1,15 +1,16 @@
 <?php
 namespace api\main;
 
-use c_functions;
-use c_responses;
+use functions;
+use responses;
+
 use encryption;
 use mysqli_wrapper;
 
 function update_ip(mysqli_wrapper $c_con, $username){
-    $c_con->query("UPDATE c_users SET c_ip=? WHERE c_username=?", [c_functions::get_ip(), $username]);
+    $c_con->query("UPDATE c_users SET c_ip=? WHERE c_username=?", [functions::get_ip(), $username]);
 
-    return c_responses::success;
+    return responses::success;
 }
 
 function fetch_data(mysqli_wrapper $c_con, $username){
@@ -23,7 +24,7 @@ function fetch_data(mysqli_wrapper $c_con, $username){
 
 function verify_user(mysqli_wrapper $c_con, $username){
     return $c_con->query("SELECT c_username FROM c_users WHERE c_username=?", [$username])->num_rows > 0
-        ? "User already exists" : c_responses::success;
+        ? "User already exists" : responses::success;
 }
 
 function verify_email(mysqli_wrapper $c_con, $email){
@@ -33,7 +34,7 @@ function verify_email(mysqli_wrapper $c_con, $email){
     if($c_con->query("SELECT c_email FROM c_users WHERE c_email=?", [$email])->num_rows > 0)
         return "Email already exists";
 
-    return c_responses::success;
+    return responses::success;
 }
 
 function login(mysqli_wrapper $c_con, $username, $password){
@@ -47,29 +48,29 @@ function login(mysqli_wrapper $c_con, $username, $password){
 
     update_ip($c_con, $username);
 
-    $_SESSION["username"] = encryption::static_encrypt(c_functions::xss_clean($username));
+    $_SESSION["username"] = encryption::static_encrypt(functions::xss_clean($username));
     $_SESSION["premium"] = encryption::static_encrypt($main_data["c_premium"]);
-    $_SESSION["panel_access"] = md5($username . c_functions::get_ip());
+    $_SESSION["panel_access"] = md5($username . functions::get_ip());
 
-    return c_responses::success;
+    return responses::success;
 }
 
 function register(mysqli_wrapper $c_con, $username, $email, $password){
     $email_verification = verify_email($c_con, $email);
 
-    if($email_verification !== c_responses::success)
+    if($email_verification !== responses::success)
         return $email_verification;
 
     $user_verification = verify_user($c_con, $username);
 
-    if($user_verification !== c_responses::success)
+    if($user_verification !== responses::success)
         return $user_verification;
 
     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
-    $c_con->query("INSERT INTO c_users (c_username, c_email, c_password, c_ip) VALUES(?, ?, ?, ?)", [$username, $email, $hashed_password, c_functions::get_ip()]);
+    $c_con->query("INSERT INTO c_users (c_username, c_email, c_password, c_ip) VALUES(?, ?, ?, ?)", [$username, $email, $hashed_password, functions::get_ip()]);
 
-    return c_responses::success;
+    return responses::success;
 }
 
 #region password_related
@@ -79,7 +80,7 @@ function send_reset_email(mysqli_wrapper $c_con, $username){
     if(!is_array($user_data))
         return "invalid_user";
 
-    $code = c_functions::random_string(10);
+    $code = functions::random_string(10);
 
     $fifteen = strtotime('+15 minutes'); //15 minutes
 
@@ -94,7 +95,7 @@ function send_reset_email(mysqli_wrapper $c_con, $username){
 
     mail($mail_data["to"], $mail_data["subject"], $mail_data["message"], $mail_data["headers"]);
 
-    return c_responses::success;
+    return responses::success;
 }
 
 function reset_password_with_code(mysqli_wrapper $c_con, $code, $new_password){
@@ -117,7 +118,7 @@ function reset_password_with_code(mysqli_wrapper $c_con, $code, $new_password){
 
     $c_con->query("UPDATE c_users SET c_password=? WHERE c_email=?", [$hashed_password, $code_data["c_email"]]);
 
-    return c_responses::success;
+    return responses::success;
 }
 
 function change_password(mysqli_wrapper $c_con, $username, $old_password, $new_password){
@@ -127,12 +128,12 @@ function change_password(mysqli_wrapper $c_con, $username, $old_password, $new_p
        return $user_data;
 
    if(!password_verify($old_password, $user_data["c_password"]))
-       return c_responses::password_is_wrong;
+       return responses::password_is_wrong;
 
    $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
 
     $c_con->query("UPDATE c_users SET c_password=? WHERE c_username=?", [$hashed_password, $username]);
 
-   return c_responses::success;
+   return responses::success;
 }
 #endregion

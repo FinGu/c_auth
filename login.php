@@ -1,5 +1,5 @@
 <?php
-include_once("general/includes.php");
+include_once 'general/includes.php';
 
 if(isset($_SESSION["panel_access"], $_SESSION["username"]))
     header("Location: dashboard");
@@ -7,8 +7,8 @@ if(isset($_SESSION["panel_access"], $_SESSION["username"]))
 if(isset($_POST["login"])) {
     $login_result = api\main\login(get_connection(), $_POST["username"], $_POST["password"]);
 
-    if($login_result !== c_responses::success)
-        c_functions::info_a($login_result, 3);
+    if($login_result !== responses::success)
+        functions::box($login_result, 3);
     else
         header("Location: dashboard");
 }

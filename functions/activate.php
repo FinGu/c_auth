@@ -1,14 +1,14 @@
 <?php
 namespace api;
 
-use c_functions;
-use c_responses;
+use functions;
+use responses;
 use api\fetch;
 use api\validation;
 use mysqli_wrapper;
 
 function get_time_to_update($token_data, $user_data){
-    $format = c_functions::get_time_to_add($token_data["c_days"]); //example : +5 days
+    $format = functions::get_time_to_add($token_data["c_days"]); //example : +5 days
 
     $user_expiry = $user_data["c_expires"];
 
@@ -31,7 +31,7 @@ function activate(mysqli_wrapper $c_con, $program_key, $username, $token) {
 
     $user_data_validation = validation\validate_user_data($user_data);
 
-    if ($user_data_validation !== c_responses::success && $user_data_validation !== c_responses::no_valid_subscription)
+    if ($user_data_validation !== responses::success && $user_data_validation !== responses::no_valid_subscription)
         return $user_data_validation;
 
     $token_data = fetch\fetch_token($c_con, $program_key, $token);
@@ -40,7 +40,7 @@ function activate(mysqli_wrapper $c_con, $program_key, $username, $token) {
         return $token_data;
 
     if ($token_data["c_used"] == '1')
-        return c_responses::already_used_token;
+        return responses::already_used_token;
 
     $time_to_update = get_time_to_update($token_data, $user_data);
 
@@ -48,6 +48,6 @@ function activate(mysqli_wrapper $c_con, $program_key, $username, $token) {
 
     $c_con->query("UPDATE c_program_tokens SET c_used='1', c_used_by=? WHERE c_program=? AND c_token=?", [$username, $program_key, $token]);
 
-    return c_responses::success;
+    return responses::success;
 
 }

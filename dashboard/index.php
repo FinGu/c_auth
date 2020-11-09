@@ -1,62 +1,67 @@
 <?php
-include("../general/includes.php");
-include("c_globals.php");
+include '../general/includes.php';
 
-c_functions::validate_session();
+include '../session.php';
+
+session::check();
 
 $c_con = get_connection();
 
-$username = c_globals::get_username();
+$username = session::username();
 
 if(isset($_POST["create_app"])) {
     $program_resp = api\admin\create_program($c_con, $username, $_POST["app_name"], $_POST["app_enc_key"]);
 
     switch($program_resp){
         case "empty_data":
-            c_functions::info_a("Program name or the api/enc key is empty", 3);
+            functions::box("Program name or the api/enc key is empty", 3);
             break;
 
         case "maximum_programs_reached":
-            c_functions::info_a("Maximum programs reached", 3);
+            functions::box("Maximum programs reached", 3);
             break;
 
         case "program_already_exists":
-            c_functions::info_a("Program already exists", 3);
+            functions::box("Program already exists", 3);
             break;
 
-        case c_responses::success:
-            c_functions::info_a("Created the program successfully", 2);
+        case responses::success:
+            functions::box("Created the program successfully", 2);
             break;
 
         default:
-            c_functions::info_a("Unknown response", 3);
+            functions::box("Unknown response", 3);
             break;
     }
 }
 
 if(isset($_POST["remove_app"])) {
-    $del_resp = api\admin\delete_program($c_con, $username, encryption::static_decrypt($_POST["remove_app"]));
+    $app_to_remove = encryption::static_decrypt($_POST['remove_app']);
+
+    $del_resp = api\admin\delete_program($c_con, $username, $app_to_remove);
 
     switch($del_resp){
-        case c_responses::program_doesnt_exist:
-            c_functions::info_a("The program you're trying to delete isn't yours");
+        case responses::program_doesnt_exist:
+            functions::box("The program you're trying to delete isn't yours");
             break;
 
-        case c_responses::success:
+        case responses::success:
             unset($_SESSION["app_to_manage"]);
-            c_functions::info_a("Removed the program successfuly", 2);
+            functions::box("Removed the program successfuly", 2);
             break;
     }
 }
 
 if(isset($_POST["manage_app"])) {
-    if(api\validation\program_valid_under_name($c_con, $username, encryption::static_decrypt($_POST["manage_app"]))){
+    $app_to_manage = encryption::static_decrypt($_POST['manage_app']);
+
+    if(api\validation\program_valid_under_name($c_con, $username, $app_to_manage)){
         $_SESSION["app_to_manage"] = $_POST["manage_app"];
 
         header("Location: manage.php");
     }
 
-    c_functions::info_a("The program you tried to manage is not yours", 3);
+    functions::box("The program you tried to manage is not yours", 3);
 }
 ?>
 <!DOCTYPE html>
@@ -179,9 +184,9 @@ if(isset($_POST["manage_app"])) {
 
         <!-- Header Menu -->
         <?php 
-            c_functions::display_news();
+            functions::display_news();
 
-            c_functions::display_user_data($username, c_globals::get_premium()); 
+            functions::display_user_data($username, session::premium()); 
         ?> 
         <!-- /header menu -->
       </div>
@@ -217,7 +222,7 @@ if(isset($_POST["manage_app"])) {
                 </a>
             </li>
 
-            <?php c_functions::display_classes(); ?>
+            <?php functions::display_classes(); ?>
 
             <li class="dt-side-nav__item">
                 <a href="https://discord.gg/DCcCgFZ" class="dt-side-nav__link">
@@ -273,16 +278,16 @@ if(isset($_POST["manage_app"])) {
                             <?php
                             $all_p_values = api\fetch\fetch_all_programs($c_con, $username);
                             foreach($all_p_values as $pro_row){
-                                $enc_pkey = encryption::static_encrypt(c_functions::xss_clean($pro_row['c_program_key']));
+                                $enc_pkey = encryption::static_encrypt(functions::xss_clean($pro_row['c_program_key']));
                                 ?>
                             <tr>
                                 <th scope="row"><?php echo $pro_row["c_id"]; ?></th>
-                                <td><?php echo c_functions::xss_clean($pro_row["c_owner"]); ?></td>
-                                <td><?php echo c_functions::xss_clean($pro_row["c_program_name"]); ?></td>
+                                <td><?php echo functions::xss_clean($pro_row["c_owner"]); ?></td>
+                                <td><?php echo functions::xss_clean($pro_row["c_program_name"]); ?></td>
                                 <td><?php echo $pro_row["c_program_key"]; ?></td>
-                                <td><?php echo c_functions::xss_clean($pro_row["c_encryption_key"]); ?></td>
+                                <td><?php echo functions::xss_clean($pro_row["c_encryption_key"]); ?></td>
                                 <td><?php echo sprintf("%.1f", $pro_row["c_version"]);  ?></td>
-                                <td><?php echo (bool)$pro_row["c_hwide"] ? 'true' : 'false'; ?></td>
+                                <td><?php echo $pro_row["c_hwide"] ? 'true' : 'false'; ?></td>
                                 <td><button type="submit" class="btn btn-primary text-uppercase" name="manage_app" value="<?php echo $enc_pkey; ?>">Manage</button></td>
                                 <td><button type="submit" class="btn btn-primary text-uppercase" name="remove_app" value="<?php echo $enc_pkey; ?>" onclick="return confirm('Are you sure you want to delete this program?');">Delete</button></td>
                             </tr>
@@ -316,7 +321,7 @@ if(isset($_POST["manage_app"])) {
                     <div class="form-group">
                         <label for="app_enc_key">Application API/Encryption key</label>
                         <input type="text" class="form-control" id="app_enc_key" name="app_enc_key" aria-describedby="help_enc" placeholder="App API/Enc Key"
-                        value="<?php echo md5(c_functions::random_string()); //by default md5'd random string ?>">
+                        value="<?php echo md5(functions::random_string()); //by default md5'd random string ?>">
                         <small id="help_enc" class="form-text">Note: this must be a random string, its used as the encryption key of your client-sided requests, you can change it if you want</small>
                     </div>
                     <button type="submit" name="create_app" class="btn btn-primary text-uppercase">Create</button>
