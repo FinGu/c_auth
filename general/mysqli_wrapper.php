@@ -7,9 +7,9 @@
  *
  * $allUsersQuery = $mW->query('SELECT * FROM users');
  *
- * $rows = $allUsersQuery->fetch_all(1);
+ * $usersRows = $allUsersQuery->fetch_all(1);
  *
- * foreach($allD as $row){
+ * foreach($usersRows as $row){
  *      echo $row['name'];
  * }
  */
