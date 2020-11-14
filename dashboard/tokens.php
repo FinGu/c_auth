@@ -198,7 +198,7 @@ if(isset($_POST["purge_unused_tokens"])) {
                         <?php 
                             functions::display_news();
 
-                            functions::display_user_data($username, session::premium()); 
+                            functions::display_user_data($username, session::premium(), session::admin() ); 
                         ?> 
                         <!-- /header menu -->
                     </div>
@@ -312,15 +312,15 @@ if(isset($_POST["purge_unused_tokens"])) {
                                     <div class="dt-card__body">
                                         <div class="form-group">
                                             <label for="token_amount">Tokens Amount</label>
-                                            <input type="text" class="form-control" id="token_amount" name="token_amount" placeholder="Tokens Amount">
+                                            <input type="number" class="form-control" id="token_amount" name="token_amount" placeholder="Tokens Amount">
                                         </div>
                                         <div class="form-group">
                                             <label for="token_days">Token Days</label>
-                                            <input type="text" class="form-control" id="token_days" name="token_days" placeholder="Token Days">
+                                            <input type="number" class="form-control" id="token_days" name="token_days" placeholder="Token Days">
                                         </div>
                                         <div class="form-group">
                                             <label for="token_level">Token Level</label>
-                                            <input type="text" class="form-control" id="token_level" name="token_level" placeholder="Token Level">
+                                            <input type="number" class="form-control" id="token_level" name="token_level" placeholder="Token Level">
                                         </div>
                                         <div class="form-group">
                                             <label for="token_type">Token Type</label>

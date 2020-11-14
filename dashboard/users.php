@@ -230,7 +230,7 @@ if(isset($_POST["ucf_button"])) {
                         <?php 
                             functions::display_news();
 
-                            functions::display_user_data($username, session::premium()); 
+                            functions::display_user_data($username, session::premium(), session::admin() ); 
                         ?> 
                         <!-- /header menu -->
                     </div>

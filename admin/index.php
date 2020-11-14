@@ -5,41 +5,30 @@ include '../session.php';
 
 session::check();
 
+if(!session::admin())
+    header('Location: ../dashboard/index.php');
+
 $c_con = get_connection();
 
 $username = session::username();
 
-function submit_premium(mysqli_wrapper $c_con, $username, $premium_token){
-    $token_query = $c_con->query('SELECT c_used FROM c_tokens WHERE c_token=?', [$premium_token]);
+if(isset($_POST['generate'])){
+    $amount = filter_var($_POST['amount'], FILTER_SANITIZE_NUMBER_INT);
 
-    if($token_query->num_rows === 0 || $token_query->fetch_assoc()['c_used'] == '1'){
-        functions::box("Inexistent or used token", 3);
+    for($i = 0; $i < $amount; $i++){
+        $rand_str = functions::random_string(19);
 
-        return;
+        $c_con->query('INSERT INTO c_tokens(c_token, c_used, c_used_by) VALUES(?, ?, ?)', [$rand_str, 0, '']);
     }
 
-    $c_con->query("UPDATE c_tokens SET c_used='1', c_used_by=? WHERE c_token=?", [$username, $premium_token]);
-
-    $c_con->query("UPDATE c_users SET c_premium='1' WHERE c_username=?", [$username]);
-
-    $_SESSION["premium"] = encryption::static_encrypt(1);
-
-    functions::box("Premium activated", 2);
 }
 
-if (isset($_POST["submit_password"])) {
-    $result = api\main\change_password($c_con, $username, $_POST["old_password"], $_POST["new_password"]);
+if(isset($_POST['delete'])){
+    $token_to_delete = encryption::static_decrypt($_POST['delete']);
 
-    functions::box(responses::switcher($result));
-}
+    $c_con->query('DELETE FROM c_tokens WHERE c_token=?', [$token_to_delete]);
 
-if (isset($_POST["submit_premium"]))
-    submit_premium($c_con, $username, $_POST['token']);
-
-if (isset($_POST["generate_token"])) {
-    $c_con->query("UPDATE c_users SET c_admin_token=? WHERE c_username=?", [md5(functions::random_string()), $username]);
-
-    functions::box("Generated successfully", 2);
+    functions::box('Deleted the token successfully', 2);
 }
 
 ?>
@@ -64,7 +53,7 @@ if (isset($_POST["generate_token"])) {
     <meta property="og:url" content="https://cauth.me"/>
     <link rel="icon" href="https://cauth.me/assets/images/logo-white.png" type="image/gif" sizes="16x16">
 <!-- /meta tags -->
-<title> cAuth - Dashboard</title>
+<title> cAuth - Admin</title>
 
 <!-- Font Icon Styles -->
 <link rel="stylesheet" href="../assets/fonts/noir-pro/styles.css">
@@ -81,15 +70,15 @@ if (isset($_POST["generate_token"])) {
 
 <link rel="stylesheet" href="../assets/css/default/theme-semidark.min.css">
 
-    <script>
-        var rtlEnable = '';
+<script>
+    var rtlEnable = '';
         var $mediaUrl = window.location.origin + '/';
         var $baseUrl = window.location.origin + '/';
-        var current_path = window.location.href.split(window.location.origin + '/').pop();
-        if (current_path == '') {
-            current_path = 'index.php';
-        }
-    </script>
+    var current_path = window.location.href.split(window.location.origin + '/').pop();
+    if (current_path == '') {
+        current_path = 'index.php';
+    }
+</script>
 
 <script src="../plugins/jquery/js/jquery.min.js"></script>
 <script src="../plugins/moment/js/moment.min.js"></script>
@@ -128,7 +117,7 @@ if (isset($_POST["generate_token"])) {
       <!-- /brand tool -->
 
         <span class="dt-brand__logo">
-        <a class="dt-brand__logo-link" href="index.php">
+        <a class="dt-brand__logo-link" href="../index.php">
           <img class="dt-brand__logo-img d-none d-sm-inline-block" src="../assets/images/logo-white.png" alt="cAuth">
           <img class="dt-brand__logo-symbol d-sm-none" src="../assets/images/logo-white.png" alt="cAuth">
         </a>
@@ -162,13 +151,33 @@ if (isset($_POST["generate_token"])) {
         <!-- /header menu -->
 
         <!-- Header Menu -->
-        <?php 
-            functions::display_news();
-
-            functions::display_user_data($username, session::premium(), session::admin()); 
-        ?>
-
-        <!-- /header menu -->
+        <ul class="dt-nav">
+            <li class="dt-nav__item dropdown">
+                <a href="#" class="dt-nav__link dropdown-toggle no-arrow dt-avatar-wrapper" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img class="dt-avatar size-30" src="../assets/images/user-avatar/default.png" alt="default"><span class="dt-avatar-info d-none d-sm-block">
+                            <span class="dt-avatar-name">
+                                <?php echo $username; ?>
+                            </span>
+                        </span> 
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <div class="dt-avatar-wrapper flex-nowrap p-6 mt-n2 bg-gradient-purple text-white rounded-top"><img class="dt-avatar" src="../assets/images/user-avatar/default.png" alt="default">
+                                <span class="dt-avatar-info">
+                                    <span class="dt-avatar-name">
+                                        <?php echo $username; ?>
+                                    </span>
+                                </span>
+                            </div>
+                            <a class="dropdown-item" href="../dashboard/">
+                                <i class="icon icon-attach-v icon-fw mr-2 mr-sm-1">
+                                </i>Dashboard</a>
+                            <a class="dropdown-item" href="logout.php">
+                                <i class="icon icon-editors icon-fw mr-2 mr-sm-1">
+                                </i>Logout</a>
+                        </div>
+                    </li>
+                </ul>        
+            <!-- /header menu -->
       </div>
       <!-- Header Menu Wrapper -->
 
@@ -198,16 +207,7 @@ if (isset($_POST["generate_token"])) {
             <li class="dt-side-nav__item">
                 <a href="index.php" class="dt-side-nav__link">
                     <i class="icon icon-dashboard icon-fw icon-lg"></i>
-                    <span class="dt-side-nav__text">Dashboard</span>
-                </a>
-            </li>
-
-            <?php functions::display_classes(); ?>
-
-            <li class="dt-side-nav__item">
-                <a href="https://discord.gg/DCcCgFZ" class="dt-side-nav__link">
-                    <i class="icon icon-layout icon-fw icon-lg"></i>
-                    <span class="dt-side-nav__text">Help</span>
+                    <span class="dt-side-nav__text">Tokens</span>
                 </a>
             </li>
 
@@ -224,83 +224,84 @@ if (isset($_POST["generate_token"])) {
                     <div class="dt-content">
                         <!-- Page Header -->
 <div class="dt-page__header">
-    <h1 class="dt-page__title">Dashboard - Account</h1>
+    <h1 class="dt-page__title">Admin Panel - Tokens</h1>
 </div>
 <!-- /page header -->
 
-<!-- Grid -->
+<form style="display: inline-block;" method="post">
 <div class="row">
-
     <!-- Grid Item -->
-    <div class="col-xl-10 col-sm-10 col-2">
+    <div class="col-xl-12 col-sm-12 col-2">
+        <div class="dt-card">
+            <div class="card table-dark overflow-hidden" style="background-color: #23293f;">
+                <div class="card-header bg-transparent">
+                    <h3 class="card-title">Premium tokens : </h3>
+                    <h5 class="card-subtitle mb-0"> All available premium tokens </h5>
+                </div>
+                <div class="card-body mb-0 pt-0">
+                    <div class="table-responsive mb-0 pt-0">
+                        <table class="table table-dark mb-0 pt-5" style="background-color: #23293f;">
+                            <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th class="text-uppercase" scope="col">Token</th>
+                                <th class="text-uppercase" scope="col">Used</th>
+                                <th class="text-uppercase" scope="col">Used By</th>
+                                <th class="text-uppercase" scope="col">Delete </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php
+                            $query_result = $c_con->query('SELECT * FROM c_tokens');
 
+                            $rows = $query_result->fetch_all(1);
+
+                            foreach($rows as $row){ ?>
+                            <tr>
+                                <th scope="row"><?php echo $row['c_id']; ?></th>
+                                <td><?php echo functions::xss_clean($row['c_token']); ?></td>
+                                <td><?php echo $row['c_used'] ? 'true' : 'false'; ?></td>
+                                <td><?php echo functions::xss_clean($row['c_used_by']); ?></td>
+                                <td><button type="submit" name="delete" class="btn btn-primary text-uppercase" value="<?php echo encryption::static_encrypt($row['c_token']); ?>">Delete</button></td>
+                            </tr>
+                            <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /tables -->
+
+                </div>
+                <!-- /card body -->
+
+            </div>
+            <!-- /bard body -->
+
+        </div>
+        <!-- /card -->
+        <br>
         <div class="dt-card">
             <div class="dt-card__header">
                 <div class="dt-card__heading">
-                    <h3 class="dt-card__title">Change your password</h3>
+                    <h3 class="dt-card__title">Generate a Token</h3>
                 </div>
             </div>
             <div class="dt-card__body">
-                <form method="post">
                     <div class="form-group">
-                        <label for="old_password">Old Password</label>
-                        <input type="password" class="form-control" id="old_password" name="old_password" placeholder="Old Password">
+                        <label for="amount">Amount</label>
+                        <input type="number" class="form-control" id="amount" name="amount" aria-describedby="amount_help" placeholder="Amount">
+                        <small id="amount_help" class="form-text">Note: the amount of tokens you want to generate</small>
                     </div>
-                    <div class="form-group">
-                        <label for="new_password">New Password</label>
-                        <input type="password" class="form-control" id="new_password" name="new_password" placeholder="New Password">
-                    </div>
-                    <button type="submit" name="submit_password" class="btn btn-primary text-uppercase">Change</button>
-                </form>
+                    <button type="submit" name="generate" class="btn btn-primary text-uppercase">Generate</button>
             </div>
         </div>
-        <br>
-        <?php
-            $user_row = $c_con->query("SELECT c_premium, c_admin_token FROM c_users WHERE c_username=?", [$username])->fetch_assoc();
-            if ($user_row["c_premium"] != '1') {
-	?>
-                <div class="dt-card">
-                    <div class="dt-card__header">
-                        <div class="dt-card__heading">
-                            <h3 class="dt-card__title">Activate Premium</h3>
-                        </div>
-                    </div>
-                    <div class="dt-card__body">
-                        <form method="post">
-                            <div class="form-group">
-                                <label for="token">Token</label>
-                                <input type="text" class="form-control" id="token" name="token" placeholder="Token">
-                            </div>
-                            <button type="submit" name="submit_premium" class="btn btn-primary text-uppercase">Submit
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            <?php } else { ?>
-                <div class="dt-card">
-                    <div class="dt-card__header">
-                        <div class="dt-card__heading">
-                            <h3 class="dt-card__title">Premium Management</h3>
-                        </div>
-                    </div>
-                    <div class="dt-card__body">
-                        <form method="post">
-                            <label>Your admin token :
-                                <?php echo ($user_row["c_admin_token"] != '0') ? $user_row["c_admin_token"] . " | " . "<a href=\"../documentation/admin/\"> api info </a>" : "token not generated yet"; ?>
-                            </label>
-                                <br> <br>
-                                <button type="submit" name="generate_token" class="btn btn-primary text-uppercase">
-                                    Generate a new token
-                                </button>
-                        </form>
-                    </div>
-                </div>
-            <?php } ?>
+
     </div>
     <!-- /grid item -->
 
 
     </div>
+</form>
+    <!-- /grid item -->
 
 </div>
 <!-- /grid -->

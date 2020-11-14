@@ -189,7 +189,7 @@ if(isset($_POST["delete_var"])) {
                         <?php 
                             functions::display_news();
 
-                            functions::display_user_data(session::username(), session::premium()); 
+                            functions::display_user_data(session::username(), session::premium(), session::admin() ); 
                         ?> 
                         <!-- /header menu -->
                     </div>

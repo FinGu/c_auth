@@ -160,7 +160,7 @@ if(isset($_POST["update_settings"])){
                         <?php 
                             functions::display_news();
 
-                            functions::display_user_data($username, session::premium()); 
+                            functions::display_user_data($username, session::premium(), session::admin() ); 
                         ?> 
                         <!-- /header menu -->
                     </div>
@@ -300,7 +300,7 @@ if(isset($_POST["update_settings"])){
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="session_expiry_minutes">Session Expiration Minutes</label>
-                                                    <input type="text" class="form-control" id="session_expiry_minutes" name="session_expiry_minutes" aria-describedby="help_sem"
+                                                    <input type="number" max="50" class="form-control" id="session_expiry_minutes" name="session_expiry_minutes" aria-describedby="help_sem"
                                                            value="<?php echo functions::xss_clean($program_data["c_sem"]); ?>"
                                                            placeholder="Session Expiration Minutes">
                                                     <small id="help_sem" class="form-text">This is the number of minutes that the session will last ( maximum value is 50 minutes )</small>

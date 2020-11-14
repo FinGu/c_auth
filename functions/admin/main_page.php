@@ -49,8 +49,10 @@ function login(mysqli_wrapper $c_con, $username, $password){
     update_ip($c_con, $username);
 
     $_SESSION["username"] = encryption::static_encrypt(functions::xss_clean($username));
-    $_SESSION["premium"] = encryption::static_encrypt($main_data["c_premium"]);
     $_SESSION["panel_access"] = md5($username . functions::get_ip());
+
+    $_SESSION["premium"] = encryption::static_encrypt($main_data["c_premium"]);
+    $_SESSION['admin'] = encryption::static_encrypt($main_data['c_admin']); 
 
     return responses::success;
 }

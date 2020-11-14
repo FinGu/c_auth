@@ -27,4 +27,9 @@ class session { // dumb global
         return isset($_SESSION['premium']) ?
             encryption::static_decrypt($_SESSION["premium"]) == '1' : false;
     }
+
+    public static function admin() : bool{
+        return isset($_SESSION['admin']) ?
+            encryption::static_decrypt($_SESSION['admin']) == '1' : false; 
+    }
 }

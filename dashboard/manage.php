@@ -131,7 +131,7 @@ if (!session::program_key())
                         <?php 
                             functions::display_news();
 
-                            functions::display_user_data(session::username(), session::premium()); 
+                            functions::display_user_data(session::username(), session::premium(), session::admin()); 
                         ?> 
                         <!-- /header menu -->
                     </div>
