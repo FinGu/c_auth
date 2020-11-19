@@ -171,7 +171,7 @@ if(isset($_POST['delete'])){
                             <a class="dropdown-item" href="../dashboard/">
                                 <i class="icon icon-attach-v icon-fw mr-2 mr-sm-1">
                                 </i>Dashboard</a>
-                            <a class="dropdown-item" href="logout.php">
+                            <a class="dropdown-item" href="../dashboard/logout.php">
                                 <i class="icon icon-editors icon-fw mr-2 mr-sm-1">
                                 </i>Logout</a>
                         </div>
