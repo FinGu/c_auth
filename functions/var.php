@@ -7,28 +7,10 @@ use api\validation;
 use api\fetch;
 
 function variable(mysqli_wrapper $c_con, $program_key, $var_name, $username, $password, $hwid){
-    $program_data = fetch\fetch_program($c_con, $program_key);
+    $login_response = login($c_con, $program_key, $username, $password, $hwid); 
 
-    if (!is_array($program_data))
-        return $program_data;
-
-    $user_data = fetch\fetch_user($c_con, $program_key, $username);
-
-    if (!is_array($user_data))
-        return $user_data;
-
-    if (!password_verify($password, $user_data["c_password"]))
-        return responses::password_is_wrong;
-
-    $user_data_validation = validation\validate_user_data($user_data);
-
-    if ($user_data_validation !== responses::success)
-        return $user_data_validation;
-
-    $user_hwid_validation = validation\validate_user_hwid($c_con, $program_data, $user_data, $hwid);
-
-    if ($user_hwid_validation !== responses::success)
-        return $user_hwid_validation;
+    if(!is_array($login_response))
+        return $login_response;
 
     $var_data = fetch\fetch_var($c_con, $program_key, $var_name);
 
