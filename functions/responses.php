@@ -21,6 +21,8 @@ class responses {
 
     public const already_used_token = "used_token";
 
+    public const not_valid_module = "invalid_module";
+
     public const logged_in = "logged_in";
 
     public const success = "success";
@@ -57,6 +59,9 @@ class responses {
             case self::user_hwid_is_wrong:
                 return "The user's hwid is wrong";
 
+            case self::not_valid_module:
+                return "The module isn't valid";
+
             #region not_c_response
             case "user_already_exists":
                 return "The user already exists in the dB";
@@ -70,6 +75,12 @@ class responses {
             case "maximum_users_reached":
                 return "The maximum users amount of the program was reached, contact the program owner";
 
+            case "maximum_tokens_reached":
+                return "The maximum tokens amount of the program was reached";
+
+            case "maximum_modules_reached":
+                return "The maximum modules amount of the program was reached";
+
             case "api_key_is_wrong":
                 return "The api/encryption key is wrong";
 
@@ -82,6 +93,8 @@ class responses {
             case "wrong_version":
                 return "Old version of the program is being used, please upgrade to the newest one";
 
+            case "bad_upload":
+                return "The upload wasn't done successfully";
             #endregion
 
             case self::logged_in:

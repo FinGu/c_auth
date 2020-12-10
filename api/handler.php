@@ -33,10 +33,12 @@ $hwid = $enc_instance->decrypt($_POST['hwid']);
 
 $token = $enc_instance->decrypt($_POST['token']);
 
-//var and logs
+//var, modules & logs
 $var_name = $enc_instance->decrypt($_POST['var_name']);
+
 $message = $enc_instance->decrypt($_POST['message']);
 
+$file_name = $enc_instance->decrypt($_POST['file_name']);
 #endregion
 
 switch($type){
@@ -85,6 +87,17 @@ switch($type){
             $var_out = responses::wrapper($var_value, "Invalid variable", false);
         else
             $var_out = responses::wrapper($var_value);
+
+        die($enc_instance->encrypt($var_out));
+
+    case 'module':
+        $module_value = api\module($c_con, $program_key, $file_name, $username, $password, $hwid);
+
+        $ghetto_trick = responses::switcher($module_value);
+
+        $var_out = ($ghetto_trick !== "The module isn't valid" && $module_value !== responses::not_valid_module)
+            ? responses::wrapper($module_value, 'Module was retrieved successfully', true) 
+            : responses::wrapper($var_value);
 
         die($enc_instance->encrypt($var_out));
 

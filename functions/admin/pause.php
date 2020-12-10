@@ -24,7 +24,7 @@ function pause_user(mysqli_wrapper $c_con, $program_key, $username) {
     if (time() > $user_timestamp)
         return responses::no_valid_subscription;
 
-    $time_to_be_added = functions::get_time_to_add(c_functions::get_days_date_dif($user_timestamp));
+    $time_to_be_added = functions::get_time_to_add(functions::get_days_date_dif($user_timestamp));
 
     $c_con->query("UPDATE c_program_users SET c_paused=? WHERE c_username=? AND c_program=?", [$time_to_be_added, $username, $program_key]);
 
