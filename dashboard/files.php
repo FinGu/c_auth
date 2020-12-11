@@ -15,7 +15,7 @@ if(!$app_to_manage)
     header("Location: index.php");
 
 if(!$is_premium && (!empty($_POST) || !empty($_FILES)) ){
-    die('sorry but your account isnt premium, module uploading is a feature only accessible for premium users');
+    die('sorry but your account isnt premium, file uploading is a feature only accessible to premium users');
 }
 
 if(isset($_FILES["new_file"])){
