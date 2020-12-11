@@ -8,7 +8,7 @@ class session { // dumb global
         if(isset($_SESSION['panel_access']) && $_SESSION['panel_access'] === md5($username . functions::get_ip()))
             return true;
 
-        if($auto) header('Location: index.php');
+        if($auto_redirect) header('Location: index.php');
 
         return false;
     }
