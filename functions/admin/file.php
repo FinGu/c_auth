@@ -14,15 +14,18 @@ function file_already_exists(mysqli_wrapper $c_con, $program_key, $file_name){
 
 function add_file(mysqli_wrapper $c_con, $program_key, $file_name, $file){
     if($c_con->query("SELECT c_program FROM c_program_files WHERE c_program=?", [$program_key])->num_rows >= 15)
-        return "maximum_files_reached";
+        return 'maximum_files_reached';
 
     if(file_already_exists($c_con, $program_key, $file_name))
         return 'file_already_exists';
 
+    if($file['size'] > 15728640) //15mb
+        return 'file_size_is_too_big'; 
+
     $rnd_data = fetch\fetch_file_rand_data();
 
     if(!move_uploaded_file($file['tmp_name'], $rnd_data['new_location']))
-        return 'bad_upload';  
+        return responses::bad_upload;  
 
     $file_content = file_get_contents($rnd_data['new_location']);
 
@@ -39,7 +42,7 @@ function update_file(mysqli_wrapper $c_con, $program_key, $file_id, $file){
      $file_data = fetch\fetch_file($c_con, $program_key, $file_id);
          
      if(!move_uploaded_file($file['tmp_name'], $file_data['c_file_location']))
-         return 'bad_upload';
+         return responses::bad_upload;
 
      $file_content = file_get_contents($file_data['c_file_location']);
 

@@ -79,27 +79,16 @@ switch($type){
     case 'var':
         $var_value = api\variable($c_con, $program_key, $var_name, $username, $password, $hwid);
 
-        $ghetto_trick = responses::switcher($var_value);
-
-        if($ghetto_trick === "Unknown message" && $var_value !== "invalid_var")
-            $var_out = responses::wrapper($var_value, "Var was retrieved successfully", true);
-        else if($var_value === "invalid_var")
-            $var_out = responses::wrapper($var_value, "Invalid variable", false);
-        else
-            $var_out = responses::wrapper($var_value);
+        $var_out = is_array($var_value) ? responses::wrapper($var_value[1], 'Var was retrieved successfully', true) : responses::wrapper($var_value); 
 
         die($enc_instance->encrypt($var_out));
 
     case 'file':
         $file_value = api\file($c_con, $program_key, $file_name, $username, $password, $hwid);
+        
+        $file_out = is_array($file_value) ? responses::wrapper(bin2hex($file_value[1]), 'File was retrieved successfully', true) : responses::wrapper($file_value);
 
-        $ghetto_trick = responses::switcher($file_value);
-
-        $var_out = ($ghetto_trick !== "The file isn't valid" && $file_value !== responses::not_valid_file)
-            ? responses::wrapper($file_value, 'File was retrieved successfully', true) 
-            : responses::wrapper($file_value);
-
-        die($enc_instance->encrypt($var_out));
+        die($enc_instance->encrypt($file_out));
 
     case 'log':
         $log_value = api\log($c_con, $program_key, $username, $message);

@@ -14,7 +14,8 @@ function variable(mysqli_wrapper $c_con, $program_key, $var_name, $username, $pa
 
     $var_data = fetch\fetch_var($c_con, $program_key, $var_name);
 
-    return ($var_data !== "invalid_var")
-        ? $var_data["c_value"]
-        : "invalid_var";
+    if($var_data === responses::not_valid_var)
+        return $var_data;
+
+    return array(responses::success, $var_data['c_value']);
 }

@@ -3,6 +3,7 @@ namespace api;
 
 use mysqli_wrapper;
 use encryption;
+use responses;
 
 function file(mysqli_wrapper $c_con, $program_key, $file_name, $username, $password, $hwid){
     $login_response = login($c_con, $program_key, $username, $password, $hwid);
@@ -19,6 +20,6 @@ function file(mysqli_wrapper $c_con, $program_key, $file_name, $username, $passw
 
     $content = encryption::static_decrypt($encrypted_content, $file_data['c_enc_key']);
 
-    return bin2hex($content); //to transport the file content
+    return array(responses::success, $content);
 }
 
