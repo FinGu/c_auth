@@ -167,6 +167,7 @@
                                             <li class="ib">75 tokens per program</li>
                                             <li class="ib">5 server sided variables</li>
                                             <li class="ib">500 message logs</li>
+                                            <li>No file uploads</li>
                                             <li>Access to the premium admin api</li>
                                         </ul>
                                     </div>
@@ -189,6 +190,7 @@
                                             <li class="ib">7500 tokens per program</li>
                                             <li class="ib">300 server sided variables</li>
                                             <li class="ib">10000 message logs</li>
+                                            <li class="ib">15 file uploads</li>
                                             <li class="ib">Access to the premium admin api</li>
                                         </ul>
                                     </div>
