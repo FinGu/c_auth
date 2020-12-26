@@ -1,103 +1,124 @@
 <?php
-error_reporting(0);
-include_once("../general/includes.php");
-include_once('handler_helper.php');
+
+//error_reporting(0);
+
+require_once '../general/includes.php';
+
+require_once 'handler_helper.php';
 
 $c_con = get_connection();
 
-$type = $_GET["type"] ?? 'null';
+$session_data = isset($_POST['sessid']) ? api\fetch\fetch_session($c_con, hex2bin($_POST['sessid'])) : 'null';
 
-$session_id = (isset($_POST['sessid']))
-    ? hex2bin($_POST["sessid"]) : 'null';
+if($session_data === responses::not_valid_session)
+    die($session_data); // TODO : message for not_valid_session
 
-$program_key = isset($_POST['program_key'])
-    ? hex2bin($_POST['program_key']) : api\general\get_pk_from_session($c_con, $session_id);
+$program_key = is_array($session_data) ? $session_data['c_program'] : hex2bin($_POST['program_key']);
 
-$api_key = api\general\get_enc_data($c_con, $program_key);
+$program_data = api\fetch\fetch_program($c_con, $program_key, false);
 
-if ($api_key === responses::program_doesnt_exist)
-    die($api_key);
+if($program_data === responses::program_doesnt_exist)
+    die($program_data);
 
-$session_iv = ($session_id !== 'null') ? api\general\get_iv_data($c_con, $program_key, $session_id) : '1234567891234567';
+$api_key = $program_data['c_encryption_key'];
+
+$session_iv = get_sess_iv($c_con, $session_data);
 
 $enc_instance = new encryption($api_key, $session_iv, true);
 
-#region var_defs
-$username = $enc_instance->decrypt($_POST['username']);
+$user_data = static function(encryption $enc_instance) /* use($_POST) */ {
+    $username = $enc_instance->decrypt($_POST['username']);
 
-$email = $enc_instance->decrypt($_POST['email']);
+    $email = isset($_POST['email']) ? $enc_instance->decrypt($_POST['email']) : 'null'; 
 
-$password = $enc_instance->decrypt($_POST['password']);
+    $password = isset($_POST['password']) ? $enc_instance->decrypt($_POST['password']) : 'null';
 
-$hwid = $enc_instance->decrypt($_POST['hwid']);
+    $hwid = isset($_POST['hwid']) ? $enc_instance->decrypt($_POST['hwid']) : 'null';
 
-$token = $enc_instance->decrypt($_POST['token']);
+    return array(
+        'username' => $username,
+        'email' => $email,
+        'password' => $password,
+        'hwid' => $hwid
+    );
+};
 
-//var, files & logs
-$var_name = $enc_instance->decrypt($_POST['var_name']);
-
-$message = $enc_instance->decrypt($_POST['message']);
-
-$file_name = $enc_instance->decrypt($_POST['file_name']);
-#endregion
-
-switch($type){
+switch($_GET['type'] ?? '?'){
     case 'init':
-        $init_enc = new encryption($api_key, hash('sha256', $_POST['init_iv']));
+        $init_enc = new encryption($api_key, hash('sha256', $_POST['init_iv'])); 
 
-        #region var_defs
-        $version = $init_enc->decrypt($_POST["version"]);
+        $version = $init_enc->decrypt($_POST['version']); 
+        
+        $api_version = $init_enc->decrypt($_POST['api_version']);
 
-        $api_version = $init_enc->decrypt($_POST["api_version"]);
-
-        $session_iv = $init_enc->decrypt($_POST["session_iv"]);
-        #endregion
+        $session_iv = $init_enc->decrypt($_POST['session_iv']);
 
         $init_out = wrap_init($c_con, $version, $api_version, $program_key, $session_iv);
 
         die($init_enc->encrypt($init_out));
 
     case 'login':
-        $login_out = wrap_login($c_con, $program_key, $username, $password, $hwid);
+        $ud = $user_data($enc_instance);
+
+        $login_out = wrap_login($c_con, $program_key, $ud['username'], $ud['password'], $ud['hwid']);
 
         die($enc_instance->encrypt($login_out));
 
     case 'register':
-        $register_out = api\register($c_con, $program_key, $username, $email, $password, $token, $hwid);
+        $token = $enc_instance->decrypt($_POST['token']);
 
-        $wrapped_register = responses::wrapper($register_out);
+        $ud = $user_data($enc_instance);
 
-        die($enc_instance->encrypt($wrapped_register));
+        $rout = api\register($c_con, $program_key, $ud['username'], $ud['email'], $ud['password'], $token, $ud['hwid']);
+
+        $wr = responses::wrapper($rout);
+
+        die($enc_instance->encrypt($wr));
 
     case 'activate':
-        $activate_out = api\activate($c_con, $program_key, $username, $token);
+        $token = $enc_instance->decrypt($_POST['token']);
 
-        $wrapped_activate = responses::wrapper($activate_out);
+        $ud = $user_data($enc_instance);
 
-        die($enc_instance->encrypt($wrapped_activate));
+        $aout = api\activate($c_con, $program_key, $ud['username'], $token);
+
+        $aw = responses::wrapper($aout);
+
+        die($enc_instance->encrypt($aw));
 
     case 'var':
-        $var_value = api\variable($c_con, $program_key, $var_name, $username, $password, $hwid);
+        $var_name = $enc_instance->decrypt($_POST['var_name']);
 
-        $var_out = is_array($var_value) ? responses::wrapper($var_value[1], 'Var was retrieved successfully', true) : responses::wrapper($var_value); 
+        $ud = $user_data($enc_instance);
 
-        die($enc_instance->encrypt($var_out));
+        $vout = api\variable($c_con, $program_key, $var_name, $ud['username'], $ud['password'], $ud['hwid']);
+
+        $vw = is_array($vout) ? responses::wrapper($vout[1], 'Var was retrieved successfully', true) : responses::wrapper($vout);
+
+        die($enc_instance->encrypt($vw));
 
     case 'file':
-        $file_value = api\file($c_con, $program_key, $file_name, $username, $password, $hwid);
-        
-        $file_out = is_array($file_value) ? responses::wrapper(bin2hex($file_value[1]), 'File was retrieved successfully', true) : responses::wrapper($file_value);
+        $file_name = $enc_instance->decrypt($_POST['file_name']); 
 
-        die($enc_instance->encrypt($file_out));
+        $ud = $user_data($enc_instance);
+
+        $fout = api\file($c_con, $program_key, $file_name, $ud['username'], $ud['password'], $ud['hwid']);
+
+        $fw = is_array($fout) ? responses::wrapper(bin2hex($fout[1]), 'File was retrieved successfully', true) : responses::wrapper($fout);
+
+        die($enc_instance->encrypt($fw));
 
     case 'log':
-        $log_value = api\log($c_con, $program_key, $username, $message);
+        $message = $enc_instance->decrypt($_POST['message']);
 
-        $wrapped_log = responses::wrapper($log_value);
+        $ud = $user_data($enc_instance);
 
-        die($enc_instance->encrypt($wrapped_log));
+        $lv = api\log($c_con, $program_key, $ud['username'], $message);
+
+        $wl = responses::wrapper($lv);
+
+        die($enc_instance->encrypt($wl));
 
     default:
         die('unknown type');
-
 }

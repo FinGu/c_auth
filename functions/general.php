@@ -4,40 +4,6 @@ namespace api\general;
 use responses;
 use mysqli_wrapper;
 
-function get_enc_data(mysqli_wrapper $c_con, $program_key) { //function used to get the encryption key
-    $program_check = $c_con->query("SELECT c_encryption_key FROM c_programs WHERE c_program_key=?", [$program_key]);
-
-    if ($program_check->num_rows === 0)
-        return responses::program_doesnt_exist;
-
-    return $program_check->fetch_assoc()["c_encryption_key"];
-}
-
-function get_pk_from_session(mysqli_wrapper $c_con, /*int|string*/ $session) { //function used to fetch the program key from a session ID
-    $session_check = $c_con->query("SELECT c_program FROM c_program_sessions WHERE c_session=?", [$session]);
-
-    if ($session_check->num_rows === 0)
-        return responses::program_doesnt_exist;
-
-    return $session_check->fetch_assoc()["c_program"];
-}
-
-function get_iv_data(mysqli_wrapper $c_con, $program_key, /*int|string*/ $input_session) { //get the iv from a specific pk and session id
-    $program_session_check = $c_con->query("SELECT * FROM c_program_sessions WHERE c_program=? AND c_session=?", [$program_key, $input_session]);
-
-    if ($program_session_check->num_rows === 0)
-        return responses::program_doesnt_exist;
-
-    $p_row = $program_session_check->fetch_assoc();
-
-    if (time() > (int)$p_row["c_expires"]) {
-        $c_con->query("DELETE FROM c_program_sessions WHERE c_program=? AND c_session=?", [$program_key, $input_session]);
-        return "expired";
-    }
-
-    return $p_row["c_iv"];
-}
-
 //program api/encryption key
 function validate_api_key(mysqli_wrapper $c_con, $program_key, $api_key) { //if the api/enc key's right
     $p_check = $c_con->query("SELECT c_encryption_key FROM c_programs WHERE c_program_key=?", [$program_key]);

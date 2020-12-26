@@ -23,9 +23,13 @@ class responses {
 
     public const not_valid_var = 'invalid_var';
 
-    public const not_valid_file = "invalid_file";
+    public const not_valid_file = 'invalid_file';
 
     public const bad_upload = 'bad_upload';
+
+    public const not_valid_session = 'not_valid_session';        
+
+    public const session_expired = 'session_expired';
 
     public const logged_in = "logged_in";
 

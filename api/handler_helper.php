@@ -1,5 +1,20 @@
 <?php
 
+function get_sess_iv(mysqli_wrapper $c_con, $session_data){
+    if($session_data === 'null')
+        return '1234567891234567';
+
+    $result = api\validation\validate_session($session_data, false);
+
+    if($result !== responses::success) {
+        $c_con->query('DELETE FROM c_program_sessions WHERE c_session=?', [$session_data['c_session']]);
+
+        return $result;
+    }
+
+    return $session_data['c_iv'];
+}
+
 function wrap_init(mysqli_wrapper $c_con, $version, $api_version, $program_key, $session_iv){       
     $result = api\init($c_con, $version, $api_version, $program_key, $session_iv);
 
