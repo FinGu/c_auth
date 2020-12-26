@@ -1,7 +1,7 @@
 <?php
 error_reporting(0);
 
-include '../general/includes.php';
+require_once '../general/includes.php';
 
 //handler for the admin api
 
