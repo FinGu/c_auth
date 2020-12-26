@@ -41,7 +41,7 @@ switch ($_GET["type"]) {
         foreach ($rows as $row)
             api\admin\pause_user($c_con, $program_key, $rws["c_username"]);
 
-        die(responses::wrapper(c_responses::success));
+        die(responses::wrapper(responses::success));
 
     case "unpause_user_sub":
         if ($_POST['username'] !== "*"){
@@ -57,7 +57,7 @@ switch ($_GET["type"]) {
         foreach ($rows as $row)
             api\admin\unpause_user($c_con, $program_key, $row["c_username"]);
 
-        die(responses::wrapper(c_responses::success));
+        die(responses::wrapper(responses::success));
 
     case "ban_user":
         $out = api\admin\ban_user($c_con, $program_key, $_POST['username']);
