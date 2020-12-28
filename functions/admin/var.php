@@ -43,15 +43,17 @@ function create_var(mysqli_wrapper $c_con, $program_key, $var_name, $var_value){
     return responses::success;
 }
     
-function update_var(mysqli_wrapper $c_con, $program_key, $var_name, $new_var_value){ //TODO : encrypt non encrypted vars while updating
+function update_var(mysqli_wrapper $c_con, $program_key, $var_name, $new_var_value){ 
     if(empty($new_var_value))
         return "empty_data";
 
     $var_data = fetch\fetch_var($c_con, $program_key, $var_name);
 
-    $new_var_value = $var_data['c_enc_key'] != '0' ? encryption::static_encrypt($new_var_value, $var_data['c_enc_key']) : $new_var_value;
+    $enc_key = $var_data['c_enc_key'] != '0' ? $var_data['c_enc_key'] : functions::random_string(16);
 
-    $c_con->query('UPDATE c_program_vars SET c_value=? WHERE c_program=? AND c_name=?', [$new_var_value, $program_key, $var_name]);
+    $new_var_value = encryption::static_encrypt($new_var_value, $enc_key);
+
+    $c_con->query('UPDATE c_program_vars SET c_value=?, c_enc_key=? WHERE c_program=? AND c_name=?', [$new_var_value, $enc_key, $program_key, $var_name]);
 
     return responses::success;
 }
