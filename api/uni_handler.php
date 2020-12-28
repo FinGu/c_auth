@@ -13,7 +13,9 @@ if($api_val !== responses::success)
 
 switch($_GET["type"] ?? '?') {
     case "login":
-        $login_out = wrap_login($c_con, $_POST["program_key"], $_POST["username"], $_POST["password"], null);
+        $success = false;
+         
+        $login_out = wrap_login($success, $c_con, $_POST["program_key"], $_POST["username"], $_POST["password"], null);
 
         die($login_out);
 

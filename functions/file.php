@@ -5,13 +5,18 @@ use mysqli_wrapper;
 use encryption;
 use responses;
 
-function file(mysqli_wrapper $c_con, $program_key, $file_name, $username, $password, $hwid){
-    $login_response = login($c_con, $program_key, $username, $password, $hwid);
+function file(mysqli_wrapper $c_con, $session_id, $file_name){
+    $session_data = fetch\fetch_session($c_con, $session_id);
 
-    if(!is_array($login_response))
-        return $login_response;
+    if($session_data === responses::not_valid_session)
+        return $session_data;
 
-    $file_data = fetch\fetch_file_with_name($c_con, $program_key, $file_name);
+    $session_validation = validation\validate_session($session_data, true);
+
+    if($session_validation !== responses::success)
+        return $session_validation;
+
+    $file_data = fetch\fetch_file_with_name($c_con, $session_data['c_program'], $file_name);
 
     if(!is_array($file_data))
         return $file_data;

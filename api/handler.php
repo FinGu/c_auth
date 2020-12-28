@@ -22,7 +22,7 @@ if($program_data === responses::program_doesnt_exist)
 
 $api_key = $program_data['c_encryption_key'];
 
-$session_iv = get_sess_iv($c_con, $session_data);
+$session_iv = get_sess_iv($c_con, $session_data); //not checked cuz i'm too lazy to update every class
 
 $enc_instance = new encryption($api_key, $session_iv, true);
 
@@ -60,7 +60,12 @@ switch($_GET['type'] ?? '?'){
     case 'login':
         $ud = $user_data($enc_instance);
 
-        $login_out = wrap_login($c_con, $program_key, $ud['username'], $ud['password'], $ud['hwid']);
+        $success = false;
+
+        $login_out = wrap_login($success, $c_con, $program_key, $ud['username'], $ud['password'], $ud['hwid']);
+
+        if($success)
+            update_sess_li($c_con, $session_data);
 
         die($enc_instance->encrypt($login_out));
 
@@ -89,9 +94,7 @@ switch($_GET['type'] ?? '?'){
     case 'var':
         $var_name = $enc_instance->decrypt($_POST['var_name']);
 
-        $ud = $user_data($enc_instance);
-
-        $vout = api\variable($c_con, $program_key, $var_name, $ud['username'], $ud['password'], $ud['hwid']);
+        $vout = api\variable($c_con, $session_data['c_session'], $var_name);
 
         $vw = is_array($vout) ? responses::wrapper($vout[1], 'Var was retrieved successfully', true) : responses::wrapper($vout);
 
@@ -100,9 +103,7 @@ switch($_GET['type'] ?? '?'){
     case 'file':
         $file_name = $enc_instance->decrypt($_POST['file_name']); 
 
-        $ud = $user_data($enc_instance);
-
-        $fout = api\file($c_con, $program_key, $file_name, $ud['username'], $ud['password'], $ud['hwid']);
+        $fout = api\file($c_con, $session_data['c_session'], $file_name);
 
         $fw = is_array($fout) ? responses::wrapper(bin2hex($fout[1]), 'File was retrieved successfully', true) : responses::wrapper($fout);
 

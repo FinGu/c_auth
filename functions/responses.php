@@ -75,7 +75,13 @@ class responses {
 
             case responses::bad_upload:
                 return "The upload wasn't done successfully";
-                
+
+            case responses::session_expired:
+                return 'The session expired.';
+            
+            case responses::not_valid_session:
+                return 'Not valid session or not logged in';
+
             #region not_response
             case "user_already_exists":
                 return "The user already exists in the dB";
