@@ -4,6 +4,7 @@ namespace api;
 use responses;
 use mysqli_wrapper;
 use api\fetch;
+use encryption;
 
 function variable(mysqli_wrapper $c_con, $session_id, $var_name){
     $session_data = fetch\fetch_session($c_con, $session_id);
@@ -21,5 +22,7 @@ function variable(mysqli_wrapper $c_con, $session_id, $var_name){
     if($var_data === responses::not_valid_var)
         return $var_data;
 
-    return array(responses::success, $var_data['c_value']);
+    $out_value = $var_data['c_enc_key'] != '0' ? encryption::static_decrypt($var_data['c_value'], $var_data['c_enc_key']) : $var_data['c_value'];
+
+    return array(responses::success, $out_value);
 }

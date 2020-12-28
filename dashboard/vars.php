@@ -309,7 +309,7 @@ if(isset($_POST["delete_var"])) {
                                                 </thead>
                                                 <tbody>
                                                 <?php
-                                                $all_vars = api\fetch\fetch_all_vars($c_con, $app_to_manage);
+                                                $all_vars = api\fetch\fetch_and_decrypt_all_vars($c_con, $app_to_manage);
                                                 foreach($all_vars as $pro_row){
                                                     ?><tr>
                                                         <td><?php echo functions::xss_clean($pro_row["c_name"]); ?></td>
