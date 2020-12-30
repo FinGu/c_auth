@@ -1,7 +1,7 @@
 <?php
-include_once("../general/includes.php");
+require_once '../general/includes.php';
 
-include_once('handler_helper.php');
+require_once 'handler_helper';
 
 //handler for the universal api
 $c_con = get_connection();
@@ -11,9 +11,11 @@ $api_val = api\general\validate_api_key($c_con, $_POST["program_key"], $_POST["a
 if($api_val !== responses::success)
     die(responses::wrapper($api_val));
 
-switch($_GET["type"]) {
+switch($_GET["type"] ?? '?') {
     case "login":
-        $login_out = wrap_login($c_con, $_POST["program_key"], $_POST["username"], $_POST["password"], null);
+        $success = false;
+         
+        $login_out = wrap_login($success, $c_con, $_POST["program_key"], $_POST["username"], $_POST["password"], null);
 
         die($login_out);
 

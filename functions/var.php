@@ -3,18 +3,26 @@ namespace api;
 
 use responses;
 use mysqli_wrapper;
-use api\validation;
 use api\fetch;
+use encryption;
 
-function variable(mysqli_wrapper $c_con, $program_key, $var_name, $username, $password, $hwid){
-    $login_response = login($c_con, $program_key, $username, $password, $hwid); 
+function variable(mysqli_wrapper $c_con, $session_id, $var_name){
+    $session_data = fetch\fetch_session($c_con, $session_id);
 
-    if(!is_array($login_response))
-        return $login_response;
+    if($session_data === responses::not_valid_session)
+        return $session_data;
 
-    $var_data = fetch\fetch_var($c_con, $program_key, $var_name);
+    $session_validation = validation\validate_session($session_data, true);
 
-    return ($var_data !== "invalid_var")
-        ? $var_data["c_value"]
-        : "invalid_var";
+    if($session_validation !== responses::success)
+        return $session_validation;
+
+    $var_data = fetch\fetch_var($c_con, $session_data['c_program'], $var_name);
+
+    if($var_data === responses::not_valid_var)
+        return $var_data;
+
+    $out_value = $var_data['c_enc_key'] != '0' ? encryption::static_decrypt($var_data['c_value'], $var_data['c_enc_key']) : $var_data['c_value'];
+
+    return array(responses::success, $out_value);
 }

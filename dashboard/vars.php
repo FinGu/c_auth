@@ -238,40 +238,7 @@ if(isset($_POST["delete_var"])) {
                             <span class="dt-side-nav__text">Management</span>
                         </li>
 
-                        <li class="dt-side-nav__item">
-                            <a href="users.php" class="dt-side-nav__link">
-                                <i class="icon icon-contacts-app icon-fw icon-lg"></i>
-                                <span class="dt-side-nav__text">Users</span>
-                            </a>
-                        </li>
-
-                        <li class="dt-side-nav__item">
-                            <a href="tokens.php" class="dt-side-nav__link">
-                                <i class="icon icon-editors icon-fw icon-lg"></i>
-                                <span class="dt-side-nav__text">Tokens</span>
-                            </a>
-                        </li>
-
-                        <li class="dt-side-nav__item">
-                            <a href="vars.php" class="dt-side-nav__link">
-                                <i class="icon icon-forms-basic icon-fw icon-lg"></i>
-                                <span class="dt-side-nav__text">Vars</span>
-                            </a>
-                        </li>
-
-                        <li class="dt-side-nav__item">
-                            <a href="logs.php" class="dt-side-nav__link">
-                                <i class="icon icon-editor-code icon-fw icon-lg"></i>
-                                <span class="dt-side-nav__text">Logs</span>
-                            </a>
-                        </li>
-
-                        <li class="dt-side-nav__item">
-                            <a href="settings.php" class="dt-side-nav__link">
-                                <i class="icon icon-profilepage icon-fw icon-lg"></i>
-                                <span class="dt-side-nav__text">Settings</span>
-                            </a>
-                        </li>
+                        <?php functions::display_pr_tabs(); ?>
 
                     </ul>
                     <!-- /sidebar navigation -->
@@ -342,7 +309,7 @@ if(isset($_POST["delete_var"])) {
                                                 </thead>
                                                 <tbody>
                                                 <?php
-                                                $all_vars = api\fetch\fetch_all_vars($c_con, $app_to_manage);
+                                                $all_vars = api\fetch\fetch_and_decrypt_all_vars($c_con, $app_to_manage);
                                                 foreach($all_vars as $pro_row){
                                                     ?><tr>
                                                         <td><?php echo functions::xss_clean($pro_row["c_name"]); ?></td>

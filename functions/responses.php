@@ -21,6 +21,16 @@ class responses {
 
     public const already_used_token = "used_token";
 
+    public const not_valid_var = 'invalid_var';
+
+    public const not_valid_file = 'invalid_file';
+
+    public const bad_upload = 'bad_upload';
+
+    public const not_valid_session = 'not_valid_session';        
+
+    public const session_expired = 'session_expired';
+
     public const logged_in = "logged_in";
 
     public const success = "success";
@@ -57,18 +67,45 @@ class responses {
             case self::user_hwid_is_wrong:
                 return "The user's hwid is wrong";
 
-            #region not_c_response
+            case self::not_valid_file:
+                return "The file isn't valid";
+
+            case self::not_valid_var:
+                return 'The var is invalid';
+
+            case responses::bad_upload:
+                return "The upload wasn't done successfully";
+
+            case responses::session_expired:
+                return 'The session expired.';
+            
+            case responses::not_valid_session:
+                return 'Not valid session or not logged in';
+
+            #region not_response
             case "user_already_exists":
                 return "The user already exists in the dB";
-
-            case "invalid_email_format":
-                return "The email format doesn't correspond to a valid email";
 
             case "email_already_exists":
                 return "The email already exists in the dB";
 
+            case 'var_already_exists':
+                return 'A variable with that name already exists in your program';
+
+            case 'file_already_exists':
+                return 'A file with that name already exists in your program';
+
+            case "invalid_email_format":
+                return "The email format doesn't correspond to a valid email";
+
             case "maximum_users_reached":
                 return "The maximum users amount of the program was reached, contact the program owner";
+
+            case "maximum_tokens_reached":
+                return "The maximum tokens amount of the program was reached";
+
+            case "maximum_files_reached":
+                return "The maximum files amount of the program was reached";
 
             case "api_key_is_wrong":
                 return "The api/encryption key is wrong";
@@ -82,6 +119,8 @@ class responses {
             case "wrong_version":
                 return "Old version of the program is being used, please upgrade to the newest one";
 
+            case 'file_size_is_too_big':
+                return 'The file size must not be greater than 15mb';    
             #endregion
 
             case self::logged_in:

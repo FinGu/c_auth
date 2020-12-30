@@ -157,6 +157,25 @@ class functions {
 		);
 		?><ul class="dt-nav"><li class="dt-nav__item dt-notification dropdown"><a href="#" class="dt-nav__link dropdown-toggle no-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="icon icon-notification2 icon-fw dt-icon-alert"></i></a><div class="dropdown-menu dropdown-menu-right dropdown-menu-media"><div class="dropdown-menu-header"><h4 class="title">Notifications (<?php echo count($values); ?>)</h4></div><div class="dropdown-menu-body ps-custom-scrollbar"><div class="h-auto"><?php foreach ($values as $name => $link) {?><a href="<?php echo $link; ?>" class="media"><span class="media-body"><span class="message"><?php echo $name; ?></span></span></a><?php }?></div></div></div></li></ul><?php
     }
+
+    public static function display_pr_tabs() : void { 
+        $tabs = array(
+            ['Users', 'users.php', 'icon-contacts-app'],
+            ['Tokens', 'tokens.php', 'icon-editors'],
+            ['Vars', 'vars.php', 'icon-forms-basic'],
+            ['Files', 'files.php', 'icon-addnew'],
+            ['Logs', 'logs.php', 'icon-editor-code'],
+            ['Settings', 'settings.php', 'icon-profilepage']
+        );
+        foreach($tabs as $tab){ ?>
+            <li class="dt-side-nav__item">
+                <a href="<?= $tab[1] ?>" class="dt-side-nav__link">
+                    <i class="icon <?= $tab[2] ?> icon-fw icon-lg"></i>
+                    <span class="dt-side-nav__text"><?= $tab[0] ?></span>
+                </a>
+            </li>
+        <?php } 
+    }
 }
 
 class encryption{
@@ -199,11 +218,11 @@ class encryption{
     public static function static_encrypt($text, $key = "c_auth_project") : string {
         $iv = random_bytes(16);
 
-        return base64_encode( openssl_encrypt($text, 'aes-256-cbc', md5($key), true, $iv) . '|' . $iv);
+        return base64_encode( openssl_encrypt($text, 'aes-256-cbc', md5($key), true, $iv) . '{c_auth}' . $iv);
     }
 
     public static function static_decrypt($text, $key = "c_auth_project") {
-        $data = explode('|', base64_decode($text));
+        $data = explode('{c_auth}', base64_decode($text));
 
         return openssl_decrypt($data[0], 'aes-256-cbc', md5($key), true, $data[1]);
     }

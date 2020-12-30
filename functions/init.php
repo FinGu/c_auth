@@ -18,7 +18,7 @@ function create_session(mysqli_wrapper $c_con, $program_key, $session_iv, $expir
 }
 
 function init(mysqli_wrapper $c_con, $version, $api_version, $program_key, $session_iv) {
-    $api_version_value = '1.1';
+    $api_version_value = '1.2';
 
     $program_data = fetch\fetch_program($c_con, $program_key);
 

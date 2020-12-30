@@ -193,42 +193,9 @@ if(isset($_POST["purge_all_logs"])){
                         <li class="dt-side-nav__item dt-side-nav__header">
                             <span class="dt-side-nav__text">Management</span>
                         </li>
-
-                        <li class="dt-side-nav__item">
-                            <a href="users.php" class="dt-side-nav__link">
-                                <i class="icon icon-contacts-app icon-fw icon-lg"></i>
-                                <span class="dt-side-nav__text">Users</span>
-                            </a>
-                        </li>
-
-                        <li class="dt-side-nav__item">
-                            <a href="tokens.php" class="dt-side-nav__link">
-                                <i class="icon icon-editors icon-fw icon-lg"></i>
-                                <span class="dt-side-nav__text">Tokens</span>
-                            </a>
-                        </li>
-
-                        <li class="dt-side-nav__item">
-                            <a href="vars.php" class="dt-side-nav__link">
-                                <i class="icon icon-forms-basic icon-fw icon-lg"></i>
-                                <span class="dt-side-nav__text">Vars</span>
-                            </a>
-                        </li>
-
-                        <li class="dt-side-nav__item">
-                            <a href="logs.php" class="dt-side-nav__link">
-                                <i class="icon icon-editor-code icon-fw icon-lg"></i>
-                                <span class="dt-side-nav__text">Logs</span>
-                            </a>
-                        </li>
-
-                        <li class="dt-side-nav__item">
-                            <a href="settings.php" class="dt-side-nav__link">
-                                <i class="icon icon-profilepage icon-fw icon-lg"></i>
-                                <span class="dt-side-nav__text">Settings</span>
-                            </a>
-                        </li>
-
+                        
+                        <?php functions::display_pr_tabs(); ?>
+                        
                     </ul>
                     <!-- /sidebar navigation -->
 
