@@ -1,17 +1,17 @@
 <?php
-include_once("general/includes.php");
+require 'functions/includes.php';
 
-if(isset($_POST["signup"])) {
-    if(functions::captcha_check(":L", $_POST["g-recaptcha-response"])) {
-        $register_result = api\main\register(get_connection(), $_POST["username"], $_POST["email"], $_POST["password"]);
+if(isset($_POST['signup'])) {
+    if(functions::captcha_check(':L', $_POST['g-recaptcha-response'])) {
+        $register_result = api\main\register(get_connection(), $_POST['username'], $_POST['email'], $_POST['password']);
 
         if ($register_result !== responses::success)
             functions::box($register_result, 3);
         else
-            header("Location: login.php");
+            header('Location: login.php');
     }
     else
-        functions::box("The captcha is wrong", 3);
+        functions::box('The captcha is wrong', 3);
 }
 ?>
 <!DOCTYPE html>

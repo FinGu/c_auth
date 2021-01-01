@@ -19,7 +19,7 @@ function login(mysqli_wrapper $c_con, $program_key, $username, $password, $hwid 
     if (!is_array($user_data))
         return $user_data;
 
-    if (!password_verify($password, $user_data["c_password"]))
+    if (!password_verify($password, $user_data['c_password']))
         return responses::password_is_wrong;
 
     $user_data_validation = validation\validate_user_data($user_data);
@@ -33,14 +33,14 @@ function login(mysqli_wrapper $c_con, $program_key, $username, $password, $hwid 
         return $user_hwid_validation;
 
     $usr_data_arr = array(
-        "username" => $user_data["c_username"],
-        "email" => $user_data["c_email"],
-        "expires" => $user_data["c_expires"],
-        "var" => $user_data["c_var"],
-        "rank" => $user_data["c_rank"]
+        'username' => $user_data['c_username'],
+        'email' => $user_data['c_email'],
+        'expires' => $user_data['c_expires'],
+        'var' => $user_data['c_var'],
+        'rank' => $user_data['c_rank']
     );
 
-    $c_con->query("UPDATE c_program_users SET c_ip=? WHERE c_program=? AND c_username=?", [functions::get_ip(), $program_key, $username]);
+    $c_con->query('UPDATE c_program_users SET c_ip=? WHERE c_program=? AND c_username=?', [functions::get_ip(), $program_key, $username]);
 
     return array(responses::logged_in, $usr_data_arr);
 }

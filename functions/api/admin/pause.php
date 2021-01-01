@@ -17,7 +17,7 @@ function pause_user(mysqli_wrapper $c_con, $program_key, $username) {
         return $user_data;
 
     if ($user_data['c_paused'] != '0')
-        return "user_already_paused";
+        return 'user_already_paused';
 
     $user_timestamp = $user_data['c_expires'];
 
@@ -26,7 +26,7 @@ function pause_user(mysqli_wrapper $c_con, $program_key, $username) {
 
     $time_to_be_added = functions::get_time_to_add(functions::get_days_date_dif($user_timestamp));
 
-    $c_con->query("UPDATE c_program_users SET c_paused=? WHERE c_username=? AND c_program=?", [$time_to_be_added, $username, $program_key]);
+    $c_con->query('UPDATE c_program_users SET c_paused=? WHERE c_username=? AND c_program=?', [$time_to_be_added, $username, $program_key]);
 
     return responses::success;
 }
@@ -42,11 +42,11 @@ function unpause_user(mysqli_wrapper $c_con, $program_key, $username) {
         return $user_data;
 
     if ($user_data['c_paused'] == '0')
-        return "user_isnt_paused";
+        return 'user_isnt_paused';
 
     $new_expiry_value = strtotime($user_data['c_paused']);
 
-    $c_con->query("UPDATE c_program_users SET c_expires=?, c_paused=? WHERE c_username=? AND c_program=?", [$new_expiry_value, '0', $username, $program_key]);
+    $c_con->query('UPDATE c_program_users SET c_expires=?, c_paused=? WHERE c_username=? AND c_program=?', [$new_expiry_value, '0', $username, $program_key]);
 
     return responses::success;
 }

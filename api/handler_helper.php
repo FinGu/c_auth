@@ -21,14 +21,14 @@ function update_sess_li(mysqli_wrapper $c_con, $session_data){ //session_data in
 }
 
 function wrap_init(mysqli_wrapper $c_con, $version, $api_version, $program_key, $session_iv){       
+    $vl = '';
+
     $result = api\init($c_con, $version, $api_version, $program_key, $session_iv);
 
     if(!is_array($result))
         return responses::wrapper($result);
 
     $rsp = $result[0];
-     
-    $vl = ''; 
 
     foreach($result as $value)
         $vl .= $value . '|';
@@ -38,7 +38,7 @@ function wrap_init(mysqli_wrapper $c_con, $version, $api_version, $program_key, 
     return responses::wrapper( 
         $vl,
         responses::switcher($rsp),
-        $rsp === "started_program"
+        $rsp === 'started_program'
     );
 }
 
@@ -53,9 +53,9 @@ function wrap_login(&$success, mysqli_wrapper $c_con, $program_key, $username, $
     $success = $rsp === responses::logged_in;
 
     return json_encode(array(
-        "success" => $success,
-        "response" => $rsp,
-        "message" => responses::switcher($rsp),
-        "user_data" => $result[1]
+        'success' => $success,
+        'response' => $rsp,
+        'message' => responses::switcher($rsp),
+        'user_data' => $result[1]
     ));
 }

@@ -1,13 +1,13 @@
 <?php
-include_once("general/includes.php");
+require 'functions/includes.php';
 
 $c_con = get_connection();
 
-$code = $_GET["code"] ?? null;
+$code = $_GET['code'] ?? null;
 
-if(isset($_POST["submit_email"])) {
-    if(functions::captcha_check(":L", $_POST["g-recaptcha-response"])) {
-        $reset_result = api\main\send_reset_email($c_con, $_POST["username"]);
+if(isset($_POST['submit_email'])) {
+    if(functions::captcha_check(':L', $_POST['g-recaptcha-response'])) {
+        $reset_result = api\main\send_reset_email($c_con, $_POST['username']);
 
         if($reset_result !== responses::success)
             functions::box($reset_result, 3);
@@ -15,16 +15,16 @@ if(isset($_POST["submit_email"])) {
             functions::box($reset_result, 2);
     }
     else
-        functions::box("The captcha is wrong", 3);
+        functions::box('The captcha is wrong', 3);
 }
 
-if(isset($_POST["reset_pass"])) {
-    $reset_result = api\main\reset_password_with_code($c_con, $code, $_POST["new_password"]);
+if(isset($_POST['reset_pass'])) {
+    $reset_result = api\main\reset_password_with_code($c_con, $code, $_POST['new_password']);
 
     if ($reset_result !== responses::success)
         functions::box($reset_result, 3);
     else
-        header("Location: login.php");
+        header('Location: login.php');
 }
 ?>
 <!DOCTYPE html>

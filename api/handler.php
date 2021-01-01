@@ -2,9 +2,9 @@
 
 error_reporting(0);
 
-require_once '../general/includes.php';
+require '../functions/includes.php';
 
-require_once 'handler_helper.php';
+require 'handler_helper.php';
 
 $c_con = get_connection();
 

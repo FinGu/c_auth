@@ -3,20 +3,21 @@
 class functions {
 
 	public static function generate_license($type = 1, $mask = null) {
-	    $to_return = '';
+        $normal_mode = static function($a, $l){
+            $out = '';
+
+            for($i = 0; $i < $a; $i++)
+                $out .= self::random_string($l).'-';
+
+            return substr($out, 0, -1);
+        };
 
 	    switch($type){
             case 1:
-                for($i = 0; $i < 4; $i++)
-                    $to_return .= self::random_string(5) . '-';
-
-                return substr($to_return, 0, -1);
+                return $normal_mode(4, 5); 
 
             case 2:
-                for($i = 0; $i < 6; $i++)
-                    $to_return .= self::random_string(5) . '-';
-
-                return substr($to_return, 0, -1);
+                return $normal_mode(6, 5);
 
             case 3:
                 return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', random_int(0, 65535), random_int(0, 65535), random_int(0, 65535), random_int(16384, 20479), random_int(32768, 49151), random_int(0, 65535), random_int(0, 65535), random_int(0, 65535));
@@ -51,7 +52,7 @@ class functions {
         return true;
 	}
 
-	public static function random_string($length = 10, $keyspace = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"): string {
+	public static function random_string($length = 10, $keyspace = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'): string {
         $out = '';
 
         for($i = 0; $i < $length; $i++){
@@ -64,12 +65,12 @@ class functions {
 	}
 
 	static function get_ip() { //headers used by fluxcdn
-        if (isset($_SERVER["HTTP_X_REAL_IP"]))
-            return $_SERVER["HTTP_X_REAL_IP"];
-        else if (isset($_SERVER["HTTP_X_FORWARDED_FOR"]))
+        if (isset($_SERVER['HTTP_X_REAL_IP']))
+            return $_SERVER['HTTP_X_REAL_IP'];
+        else if (isset($_SERVER['HTTP_X_FORWARDED_FOR']))
             return $_SERVER['HTTP_X_FORWARDED_FOR'];
         else
-            return "unknown";
+            return 'unknown';
     }
 
 	public static function captcha_check($secret, $response) {
@@ -101,12 +102,13 @@ class functions {
 
         $second = new DateTime("@$local_time");
 
-        return (int)$first->diff($second)->format("%d") + 1;
+        return (int)$first->diff($second)->format('%d') + 1; 
+        
         //1 is added because the result is one day less than the original time
     }
 
     public static function get_time_to_add($days): string {
-        return "+" . $days . " days"; // Lol, useless right?
+        return '+' . $days . ' days'; // Lol, useless right?
     }
 
 	public static function xss_clean($s) : string {
@@ -151,9 +153,10 @@ class functions {
 
 	public static function display_news() : void {
 		$values = array(
-		    "Added Python and Java support for cAuth" => "javascript:void(0)",
-			"Updated the api version to 1.1" => "changelog.txt",
-            "Updated the api version to 1.0 ( not beta )" => "changelog.txt"
+            'Updated the api version to 1.2' => 'changelog.txt',
+            'Added Python and Java support for cAuth' => 'changelog.txt',
+			'Updated the api version to 1.1' => 'changelog.txt',
+            'Updated the api version to 1.0 ( not beta )' => 'changelog.txt'
 		);
 		?><ul class="dt-nav"><li class="dt-nav__item dt-notification dropdown"><a href="#" class="dt-nav__link dropdown-toggle no-arrow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="icon icon-notification2 icon-fw dt-icon-alert"></i></a><div class="dropdown-menu dropdown-menu-right dropdown-menu-media"><div class="dropdown-menu-header"><h4 class="title">Notifications (<?php echo count($values); ?>)</h4></div><div class="dropdown-menu-body ps-custom-scrollbar"><div class="h-auto"><?php foreach ($values as $name => $link) {?><a href="<?php echo $link; ?>" class="media"><span class="media-body"><span class="message"><?php echo $name; ?></span></span></a><?php }?></div></div></div></li></ul><?php
     }
@@ -215,13 +218,13 @@ class encryption{
 
     #region static_b64_deprecated
 
-    public static function static_encrypt($text, $key = "c_auth_project") : string {
+    public static function static_encrypt($text, $key = 'c_auth_project') : string {
         $iv = random_bytes(16);
 
         return base64_encode( openssl_encrypt($text, 'aes-256-cbc', md5($key), true, $iv) . '{c_auth}' . $iv);
     }
 
-    public static function static_decrypt($text, $key = "c_auth_project") {
+    public static function static_decrypt($text, $key = 'c_auth_project') {
         $data = explode('{c_auth}', base64_decode($text));
 
         return openssl_decrypt($data[0], 'aes-256-cbc', md5($key), true, $data[1]);

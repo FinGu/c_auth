@@ -1,7 +1,7 @@
 <?php
-include '../general/includes.php';
+require '../functions/includes.php';
 
-include '../session.php';
+require '../session.php';
 
 session::check();
 
@@ -10,53 +10,53 @@ $c_con = get_connection();
 $app_to_manage = session::program_key();
 
 if(!$app_to_manage)
-    header("Location: index.php");
+    header('Location: index.php');
 
-if(isset($_POST["new_var_value"])){
+if(isset($_POST['new_var_value'])){
     $var_to_edit = encryption::static_decrypt($_POST['edit_var']);
 
-    $var_resp = api\admin\update_var($c_con, $app_to_manage, $var_to_edit, $_POST["new_var_value"]);
+    $var_resp = api\admin\update_var($c_con, $app_to_manage, $var_to_edit, $_POST['new_var_value']);
 
-    if($var_resp === "empty_data")
-        functions::box("The new var value is empty", 3);
+    if($var_resp === 'empty_data')
+        functions::box('The new var value is empty', 3);
     else
-        functions::box("Updated the var successfully", 2);
+        functions::box('Updated the var successfully', 2);
 
-    unset($_POST["edit_var"]);
+    unset($_POST['edit_var']);
 }
 
-if(isset($_POST["create_var"])) {
-    $var_resp = api\admin\create_var($c_con, $app_to_manage, $_POST["var_name"], $_POST["var_value"]);
+if(isset($_POST['create_var'])) {
+    $var_resp = api\admin\create_var($c_con, $app_to_manage, $_POST['var_name'], $_POST['var_value']);
 
     switch ($var_resp) {
-        case "empty_data":
-            functions::box("Empty data", 3);
+        case 'empty_data':
+            functions::box('Empty data', 3);
             break;
 
-        case "maximum_vars_reached":
-            functions::box("Maximum vars reached", 3);
+        case 'maximum_vars_reached':
+            functions::box('Maximum vars reached', 3);
             break;
 
-        case "var_already_exists":
-            functions::box("Var already exists", 3);
+        case 'var_already_exists':
+            functions::box('Var already exists', 3);
             break;
 
         case responses::success:
-            functions::box("Created the var successfully", 2);
+            functions::box('Created the var successfully', 2);
             break;
 
         default:
-            functions::box("Unknown response", 3);
+            functions::box('Unknown response', 3);
             break;
     }
 }
 
-if(isset($_POST["delete_var"])) {
+if(isset($_POST['delete_var'])) {
     $var_to_delete = encryption::static_decrypt($_POST['delete_var']);
 
     api\admin\delete_var($c_con, $app_to_manage, $var_to_delete);
 
-    functions::box("Deleted the var successfully", 2);
+    functions::box('Deleted the var successfully', 2);
 }
 
 ?>
@@ -312,22 +312,22 @@ if(isset($_POST["delete_var"])) {
                                                 $all_vars = api\fetch\fetch_and_decrypt_all_vars($c_con, $app_to_manage);
                                                 foreach($all_vars as $pro_row){
                                                     ?><tr>
-                                                        <td><?php echo functions::xss_clean($pro_row["c_name"]); ?></td>
-                                                        <td><?php echo functions::xss_clean($pro_row["c_value"]); ?></td>
-                                                        <td><button class="btn btn-primary text-uppercase" name="edit_var" value="<?php echo encryption::static_encrypt(functions::xss_clean($pro_row["c_name"])); ?>"> Edit</button></td>
-                                                        <td><button class="btn btn-primary text-uppercase" name="delete_var" value="<?php echo encryption::static_encrypt(functions::xss_clean($pro_row["c_name"])); ?>"> Delete</button></td>
+                                                        <td><?php echo functions::xss_clean($pro_row['c_name']); ?></td>
+                                                        <td><?php echo functions::xss_clean($pro_row['c_value']); ?></td>
+                                                        <td><button class="btn btn-primary text-uppercase" name="edit_var" value="<?php echo encryption::static_encrypt(functions::xss_clean($pro_row['c_name'])); ?>"> Edit</button></td>
+                                                        <td><button class="btn btn-primary text-uppercase" name="delete_var" value="<?php echo encryption::static_encrypt(functions::xss_clean($pro_row['c_name'])); ?>"> Delete</button></td>
                                                     </tr>
                                                     <?php } ?>
                                                 </tbody>
                                             </table>
                                         </div>
                                         <!-- /tables -->
-                                        <?php if(isset($_POST["edit_var"])) { ?>
+                                        <?php if(isset($_POST['edit_var'])) { ?>
                                             <div class="form-group">
                                                 <label for="new_var_value">New var value :</label>
                                                 <input class="form-control" type="text" placeholder="New value" name="new_var_value" id="new_var_value">
                                             </div>
-                                            <input type="hidden" name="edit_var" value="<?php echo functions::xss_clean($_POST["edit_var"]); ?>"/>
+                                            <input type="hidden" name="edit_var" value="<?php echo functions::xss_clean($_POST['edit_var']); ?>"/>
                                             <button class="btn btn-primary text-uppercase"> Change</button> <br> <br>
                                         <?php } ?>
                                     </div>

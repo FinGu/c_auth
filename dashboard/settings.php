@@ -1,7 +1,7 @@
 <?php
-include '../general/includes.php';
+require '../functions/includes.php';
 
-include '../session.php';
+require '../session.php';
 
 session::check();
 
@@ -12,29 +12,23 @@ $username = session::username();
 $app_to_manage = session::program_key();
 
 if(!$app_to_manage)
-    header("Location: index.php");
+    header('Location: index.php');
 
-if(isset($_POST["update_settings"])){
-    $api_key = !empty($_POST['enc_key']) ? $_POST['enc_key'] : null;
-
-    $expiration_minutes = (!empty($_POST['session_expiry_minutes']) && $_POST["session_expiry_minutes"] <= 50)
-        ? $_POST["session_expiry_minutes"] : null;
-
-    $version = !empty($_POST['version']) ? $_POST['version'] : null;
-
-    $download_link = !empty($_POST["download_link"]) ? $_POST["download_link"] : null;
+if(isset($_POST['update_settings'])){
+    $expiration_minutes = (!empty($_POST['session_expiry_minutes']) && $_POST['session_expiry_minutes'] <= 50)
+        ? $_POST['session_expiry_minutes'] : null;
 
     api\admin\update_program_data($c_con, array(
         'program_key' => $app_to_manage,
-        'api_key' => $api_key,
+        'api_key' => $_POST['enc_key'] ?? null,
         'expiration_minutes' => $expiration_minutes,
-        'version' => $version,
-        'download_link' => $download_link,
-        'killswitch' => $_POST["killswitch_enabled"] ?? null,
-        'hwid' => $_POST["hwid_enabled"] ?? null
+        'version' => $_POST['version'] ?? null,
+        'download_link' => $_POST['download_link'] ?? null,
+        'killswitch' => $_POST['killswitch_enabled'] ?? null,
+        'hwid' => $_POST['hwid_enabled'] ?? null
     ));
 
-    functions::box("Settings updated", 2);
+    functions::box('Settings updated', 2);
 }
 
 ?>
@@ -261,27 +255,27 @@ if(isset($_POST["update_settings"])){
                                                 <div class="form-group">
                                                     <label for="download_link">Download Link</label>
                                                     <input type="text" class="form-control" id="download_link" name="download_link" aria-describedby="help_dl"
-                                                           value="<?php echo functions::xss_clean($program_data["c_dl"]); ?>"
+                                                           value="<?php echo functions::xss_clean($program_data['c_dl']); ?>"
                                                            placeholder="Download Link">
                                                     <small id="help_dl" class="form-text">This is the link that will be opened if the version is wrong</small>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="session_expiry_minutes">Session Expiration Minutes</label>
                                                     <input type="number" max="50" class="form-control" id="session_expiry_minutes" name="session_expiry_minutes" aria-describedby="help_sem"
-                                                           value="<?php echo functions::xss_clean($program_data["c_sem"]); ?>"
+                                                           value="<?php echo functions::xss_clean($program_data['c_sem']); ?>"
                                                            placeholder="Session Expiration Minutes">
                                                     <small id="help_sem" class="form-text">This is the number of minutes that the session will last ( maximum value is 50 minutes )</small>
                                                 </div>
                                                 <div class="form-group custom-control custom-checkbox">
                                                     <input type="checkbox" class="custom-control-input" aria-describedby="help_kills"
-                                                        <?php if( (bool)$program_data["c_killswitch"] ) echo 'checked="checked"'; ?>
+                                                        <?php if($program_data['c_killswitch']) echo 'checked="checked"'; ?>
                                                            id="killswitch_enabled" name="killswitch_enabled">
                                                     <label class="custom-control-label" for="killswitch_enabled">KillSwitch Enabled</label>
                                                     <small id="help_kills" class="form-text">if this option is enabled, the API functions for the program you're managing will be disabled</small>
                                                 </div>
                                                 <div class="form-group custom-control custom-checkbox">
                                                     <input type="checkbox" class="custom-control-input" aria-describedby="help_hwide"
-                                                           <?php if( (bool)$program_data["c_hwide"]) echo 'checked="checked"'; ?>
+                                                           <?php if($program_data['c_hwide']) echo 'checked="checked"'; ?>
                                                            id="hwid_enabled" name="hwid_enabled">
                                                     <label class="custom-control-label" for="hwid_enabled">Hardware ID
                                                         Checks Enabled</label>

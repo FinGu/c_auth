@@ -1,7 +1,7 @@
 <?php
-include '../general/includes.php';
+require '../functions/includes.php';
 
-include '../session.php';
+require '../session.php';
 
 session::check();
 

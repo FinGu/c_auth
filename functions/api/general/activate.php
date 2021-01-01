@@ -8,9 +8,9 @@ use api\validation;
 use mysqli_wrapper;
 
 function get_time_to_update($token_data, $user_data){
-    $format = functions::get_time_to_add($token_data["c_days"]); //example : +5 days
+    $format = functions::get_time_to_add($token_data['c_days']); //example : +5 days
 
-    $user_expiry = $user_data["c_expires"];
+    $user_expiry = $user_data['c_expires'];
 
     if ($user_expiry == '0' || time() > $user_expiry)
         return strtotime($format);
@@ -39,15 +39,14 @@ function activate(mysqli_wrapper $c_con, $program_key, $username, $token) {
     if (!is_array($token_data))
         return $token_data;
 
-    if ($token_data["c_used"] == '1')
+    if ($token_data['c_used'] == '1')
         return responses::already_used_token;
 
     $time_to_update = get_time_to_update($token_data, $user_data);
 
-    $c_con->query("UPDATE c_program_users SET c_expires=?, c_rank=? WHERE c_program=? AND c_username=?", [$time_to_update, $token_data["c_rank"], $program_key, $username]);
+    $c_con->query('UPDATE c_program_users SET c_expires=?, c_rank=? WHERE c_program=? AND c_username=?', [$time_to_update, $token_data['c_rank'], $program_key, $username]);
 
-    $c_con->query("UPDATE c_program_tokens SET c_used='1', c_used_by=? WHERE c_program=? AND c_token=?", [$username, $program_key, $token]);
+    $c_con->query('UPDATE c_program_tokens SET c_used=1, c_used_by=? WHERE c_program=? AND c_token=?', [$username, $program_key, $token]);
 
     return responses::success;
-
 }

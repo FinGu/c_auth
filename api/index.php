@@ -1,2 +1,2 @@
 <?php
-die("not allowed!!");
+die('not allowed!!');

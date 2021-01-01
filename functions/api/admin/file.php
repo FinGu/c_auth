@@ -13,7 +13,7 @@ function file_already_exists(mysqli_wrapper $c_con, $program_key, $file_name){
 }
 
 function add_file(mysqli_wrapper $c_con, $program_key, $file_name, $file){
-    if($c_con->query("SELECT c_program FROM c_program_files WHERE c_program=?", [$program_key])->num_rows >= 15)
+    if($c_con->query('SELECT c_program FROM c_program_files WHERE c_program=?', [$program_key])->num_rows >= 15)
         return 'maximum_files_reached';
 
     if(file_already_exists($c_con, $program_key, $file_name))

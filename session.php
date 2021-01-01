@@ -14,22 +14,18 @@ class session { // dumb global
     }
 
     public static function username() : string {
-        return isset($_SESSION["username"])
-            ? encryption::static_decrypt($_SESSION["username"]) : "not_defined";
+        return $_SESSION['username'] ?? 'not_defined';
     }
 
     public static function program_key(){
-        return isset($_SESSION["app_to_manage"])
-            ? encryption::static_decrypt($_SESSION["app_to_manage"]) : false;
+        return $_SESSION['app_to_manage'] ?? false;
     }
 
     public static function premium() : bool {
-        return isset($_SESSION['premium']) ?
-            encryption::static_decrypt($_SESSION["premium"]) == '1' : false;
+        return $_SESSION['premium'] ?? false;
     }
 
     public static function admin() : bool{
-        return isset($_SESSION['admin']) ?
-            encryption::static_decrypt($_SESSION['admin']) == '1' : false; 
+        return $_SESSION['admin'] ?? false;
     }
 }

@@ -1,7 +1,7 @@
 <?php
-include '../general/includes.php';
+require '../functions/includes.php';
 
-include '../session.php';
+require '../session.php';
 
 session::check();
 
@@ -13,33 +13,33 @@ function submit_premium(mysqli_wrapper $c_con, $username, $premium_token){
     $token_query = $c_con->query('SELECT c_used FROM c_tokens WHERE c_token=?', [$premium_token]);
 
     if($token_query->num_rows === 0 || $token_query->fetch_assoc()['c_used'] == '1'){
-        functions::box("Inexistent or used token", 3);
+        functions::box('Inexistent or used token', 3);
 
         return;
     }
 
-    $c_con->query("UPDATE c_tokens SET c_used='1', c_used_by=? WHERE c_token=?", [$username, $premium_token]);
+    $c_con->query('UPDATE c_tokens SET c_used=1, c_used_by=? WHERE c_token=?', [$username, $premium_token]);
 
-    $c_con->query("UPDATE c_users SET c_premium='1' WHERE c_username=?", [$username]);
+    $c_con->query('UPDATE c_users SET c_premium=1 WHERE c_username=?', [$username]);
 
-    $_SESSION["premium"] = encryption::static_encrypt(1);
+    $_SESSION['premium'] = true;
 
-    functions::box("Premium activated", 2);
+    functions::box('Premium activated', 2);
 }
 
-if (isset($_POST["submit_password"])) {
-    $result = api\main\change_password($c_con, $username, $_POST["old_password"], $_POST["new_password"]);
+if (isset($_POST['submit_password'])) {
+    $result = api\main\change_password($c_con, $username, $_POST['old_password'], $_POST['new_password']);
 
     functions::box(responses::switcher($result));
 }
 
-if (isset($_POST["submit_premium"]))
+if (isset($_POST['submit_premium']))
     submit_premium($c_con, $username, $_POST['token']);
 
-if (isset($_POST["generate_token"])) {
-    $c_con->query("UPDATE c_users SET c_admin_token=? WHERE c_username=?", [md5(functions::random_string()), $username]);
+if (isset($_POST['generate_token'])) {
+    $c_con->query('UPDATE c_users SET c_admin_token=? WHERE c_username=?', [md5(functions::random_string()), $username]);
 
-    functions::box("Generated successfully", 2);
+    functions::box('Generated successfully', 2);
 }
 
 ?>

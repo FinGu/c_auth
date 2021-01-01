@@ -1,7 +1,7 @@
 <?php
-include '../general/includes.php';
+require '../functions/includes.php';
 
-include '../session.php';
+require '../session.php';
 
 session::check();
 
@@ -12,48 +12,48 @@ $username = session::username();
 $app_to_manage = session::program_key();
 
 if(!$app_to_manage)
-    header("Location: index.php");
+    header('Location: index.php');
 
-if(isset($_POST["mng_submit"])) {
+if(isset($_POST['mng_submit'])) {
     $query = static function($to_update) { return "UPDATE c_program_users SET {$to_update}=? WHERE c_program=?"; };
 
-    $user_to_manage = encryption::static_decrypt($_POST["manage_user"]);
+    $user_to_manage = encryption::static_decrypt($_POST['manage_user']);
 
-    if (isset($_POST["reset_hwid"]))
+    if (isset($_POST['reset_hwid']))
         api\admin\reset_user_hwid($c_con, $app_to_manage, $user_to_manage);
 
-    if (!empty($_POST["rank_value"])){
+    if (!empty($_POST['rank_value'])){
         $rank = filter_var($_POST['rank_value'], FILTER_SANITIZE_NUMBER_INT);
 
         $c_con->query($query('c_rank'), [$rank, $app_to_manage]);
     }
 
-    if (!empty($_POST["variable_value"]))
-        api\admin\edit_user_var($c_con, $app_to_manage, $_POST["variable_value"], $user_to_manage);
+    if (!empty($_POST['variable_value']))
+        api\admin\edit_user_var($c_con, $app_to_manage, $_POST['variable_value'], $user_to_manage);
 
-    if (!empty($_POST["password_value"])) {
+    if (!empty($_POST['password_value'])) {
         $hashed_password = password_hash($_POST['password_value'], PASSWORD_BCRYPT);
 
         $c_con->query($query('c_password'), [$hashed_password, $app_to_manage]);
     }
 
-    if (!empty($_POST["timestamp_value"])) {
+    if (!empty($_POST['timestamp_value'])) {
         $new_timestamp = $_POST['timestamp_value'];
 
         if(functions::is_valid_timestamp($new_timestamp))
             $c_con->query($query('c_expires'), [$new_timestamp, $app_to_manage]);
     }
 
-    if (isset($_POST["pause_user"])) //pause/unpause user
+    if (isset($_POST['pause_user'])) //pause/unpause user
         api\admin\pause_user($c_con, $app_to_manage, $user_to_manage);
     else
         api\admin\unpause_user($c_con, $app_to_manage, $user_to_manage);
 
-    api\admin\ban_user($c_con, $app_to_manage, $user_to_manage, !isset($_POST["ban_user"]));
+    api\admin\ban_user($c_con, $app_to_manage, $user_to_manage, !isset($_POST['ban_user']));
 
-    unset($_POST["manage_user"]);
+    unset($_POST['manage_user']);
 
-    functions::box("Updated the user data successfully", 2);
+    functions::box('Updated the user data successfully', 2);
 }
 
 if(isset($_POST['pause_all_users']) || isset($_POST['unpause_all_users'])){
@@ -71,28 +71,28 @@ if(isset($_POST['pause_all_users']) || isset($_POST['unpause_all_users'])){
     }
 }
 
-if(isset($_POST["purge_all_users"])) {
-    $c_con->query("DELETE FROM c_program_users WHERE c_program=?", [$app_to_manage]);
+if(isset($_POST['purge_all_users'])) {
+    $c_con->query('DELETE FROM c_program_users WHERE c_program=?', [$app_to_manage]);
 
-    functions::box("Users deleted successfully", 2);
+    functions::box('Users deleted successfully', 2);
 }
 
-if(isset($_POST["reset_all_users_hwid"])){
-    api\admin\reset_user_hwid($c_con, $app_to_manage, ".", true);
+if(isset($_POST['reset_all_users_hwid'])){
+    api\admin\reset_user_hwid($c_con, $app_to_manage, '.', true);
 
-    functions::box("Reseted all users hwid successfully", 2);
+    functions::box('Reseted all users hwid successfully', 2);
 }
 
-if(isset($_POST["delete_user"])){
+if(isset($_POST['delete_user'])){
     $user_to_delete = encryption::static_decrypt($_POST['delete_user']);
 
     api\admin\delete_user($c_con, $app_to_manage, $user_to_delete);
 
-    functions::box("User deleted successfully", 2);
+    functions::box('User deleted successfully', 2);
 }
 
-if(isset($_POST["ucf_button"])) {
-    $resp = api\register($c_con, $app_to_manage, $_POST["ucf_username"], $_POST["ucf_email"], $_POST["ucf_password"], $_POST["ucf_token"], 0);
+if(isset($_POST['ucf_button'])) {
+    $resp = api\register($c_con, $app_to_manage, $_POST['ucf_username'], $_POST['ucf_email'], $_POST['ucf_password'], $_POST['ucf_token'], 0);
 
     $to_show = responses::switcher($resp);
 
@@ -397,17 +397,17 @@ if(isset($_POST["ucf_button"])) {
                                                     $all_p_values = api\fetch\fetch_all_users($c_con, $app_to_manage);
                                                     foreach($all_p_values as $single_p_value) { ?>
                                                                 <tr>
-                                                                    <td><?php echo functions::xss_clean($single_p_value["c_username"]); ?></td>
-                                                                    <td><?php echo functions::xss_clean($single_p_value["c_email"]); ?></td>
-                                                                    <td><?php echo date('m/d/Y', strip_tags($single_p_value["c_expires"])); ?></td>
-                                                                    <td><?php echo functions::xss_clean($single_p_value["c_var"]); ?></td>
-                                                                    <td><?php echo functions::xss_clean($single_p_value["c_hwid"]); ?></td>
-                                                                    <td><?php echo $single_p_value["c_rank"]; ?></td>
-                                                                    <td><?php echo (bool)$single_p_value["c_paused"] ? "true" : "false"; //boolval works for this, believe or not ?></td>
-                                                                    <td><?php echo (bool)$single_p_value["c_banned"] ? 'true' : 'false' ?></td>
-                                                                    <td><?php echo functions::xss_clean($single_p_value["c_ip"]); ?></td>
-                                                                    <td><button class="btn btn-primary text-uppercase" name="manage_user" value="<?php echo encryption::static_encrypt(functions::xss_clean($single_p_value['c_username'])) . '|' . (($single_p_value["c_paused"] != '0') ? "true" : "false") . '|' . (($single_p_value["c_banned"] == '1') ? "true" : "false");
-                                                                    //the reason of this mini mess is to know if the key is banned/paused or not, to display it correctly on the manage user form ^ ?>"> Manage</button></td>
+                                                                    <td><?php echo functions::xss_clean($single_p_value['c_username']); ?></td>
+                                                                    <td><?php echo functions::xss_clean($single_p_value['c_email']); ?></td>
+                                                                    <td><?php echo date('m/d/Y', strip_tags($single_p_value['c_expires'])); ?></td>
+                                                                    <td><?php echo functions::xss_clean($single_p_value['c_var']); ?></td>
+                                                                    <td><?php echo functions::xss_clean($single_p_value['c_hwid']); ?></td>
+                                                                    <td><?php echo $single_p_value['c_rank']; ?></td>
+                                                                    <td><?php echo $single_p_value['c_paused'] ? 'true' : 'false'; ?></td>
+                                                                    <td><?php echo $single_p_value['c_banned'] ? 'true' : 'false' ?></td>
+                                                                    <td><?php echo functions::xss_clean($single_p_value['c_ip']); ?></td>
+                                                                    <td><button class="btn btn-primary text-uppercase" name="manage_user" value="<?php echo encryption::static_encrypt(functions::xss_clean($single_p_value['c_username'])) . '|' . (($single_p_value['c_paused'] != '0') ? 'true' : 'false') . '|' . (($single_p_value['c_banned'] == '1') ? 'true' : 'false');
+                                                                    //the reason of this mess is to know if the key is banned/paused or not, to display it correctly on the manage user form ^ ?>"> Manage</button></td>
                                                                     <td><button class="btn btn-primary text-uppercase" name="delete_user" value="<?php echo encryption::static_encrypt(functions::xss_clean($single_p_value['c_username'])); ?>"> Remove</button>
                                                                     </td>
                                                                 </tr>
@@ -415,8 +415,8 @@ if(isset($_POST["ucf_button"])) {
                                                     </tbody>
                                                 </table>
                                             </div>
-                                            <?php if(isset($_POST["manage_user"])) {
-                                                $us_split = explode("|", $_POST["manage_user"]); //split the manage_user data
+                                            <?php if(isset($_POST['manage_user'])) {
+                                                $us_split = explode('|', $_POST['manage_user']); //split the manage_user data
                                                 ?>
                                             <div class="form-group">
                                                 <label for="password_value">Change the user's password</label>
@@ -440,13 +440,13 @@ if(isset($_POST["ucf_button"])) {
                                             </div>
                                             <div class="form-group custom-control custom-checkbox">
                                                  <input type="checkbox" class="custom-control-input" id="pause_user" name="pause_user"
-                                                        <?php if($us_split[1] === "true") echo 'checked="checked"'; ?>
+                                                        <?php if($us_split[1] === 'true') echo 'checked="checked"'; ?>
                                                  >
                                                  <label class="custom-control-label" for="pause_user">Pause the user's sub</label>
                                             </div>
                                             <div class="form-group custom-control custom-checkbox">
                                                 <input type="checkbox" class="custom-control-input" id="ban_user" name="ban_user"
-                                                    <?php if($us_split[2] === "true") echo 'checked="checked"'; ?>
+                                                    <?php if($us_split[2] === 'true') echo 'checked="checked"'; ?>
                                                 >
                                                 <label class="custom-control-label" for="ban_user">Ban/Unban the user </label>
                                             </div>

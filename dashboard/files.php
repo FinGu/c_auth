@@ -1,7 +1,7 @@
 <?php
-include '../general/includes.php';
+require '../functions/includes.php';
 
-include '../session.php';
+require '../session.php';
 
 session::check();
 
@@ -12,13 +12,13 @@ $app_to_manage = session::program_key();
 $is_premium = session::premium();
 
 if(!$app_to_manage)
-    header("Location: index.php");
+    header('Location: index.php');
 
 if(!$is_premium && (!empty($_POST) || !empty($_FILES)) ){
     die('sorry but your account isnt premium, file uploading is a feature only accessible to premium users');
 }
 
-if(isset($_FILES["new_file"])){
+if(isset($_FILES['new_file'])){
     $file_id = encryption::static_decrypt($_POST['edit_file']);
 
     $plain_resp = api\admin\update_file($c_con, $app_to_manage, $file_id, $_FILES['new_file']);
@@ -27,7 +27,7 @@ if(isset($_FILES["new_file"])){
 
     functions::box($out);
 
-    unset($_POST["edit_file"]);
+    unset($_POST['edit_file']);
 }
 
 

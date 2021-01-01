@@ -1,12 +1,12 @@
 <?php
-include '../general/includes.php';
+require '../functions/includes.php';
 
-include '../session.php';
+require '../session.php';
 
 session::check();
 
 if (!session::program_key())
-	header("Location: index.php");
+	header('Location: index.php');
 
 ?>
 <!DOCTYPE html>
