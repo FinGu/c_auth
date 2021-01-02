@@ -2,11 +2,11 @@
 
 ### Info
 
-~ cAuth.me ( authentication service ) website and classes source code
+&emsp; cAuth.me ( authentication service ) website and classes source code
 
-~ backend done with PHP ([db structure](assets/c_auth.sql))
+&emsp; backend done with PHP ([db structure](assets/c_auth.sql))
 
-~ original template ([drift admin template](https://themeforest.net/item/drift-admin-template-html-jquery-and-bootstrap4/23385839))
+&emsp; original template ([drift admin template](https://themeforest.net/item/drift-admin-template-html-jquery-and-bootstrap4/23385839))
 
 ### Features
 - multiple program management
