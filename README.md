@@ -26,8 +26,8 @@
 ### How to setup
 ```
 Setup a web server
-Install PHP and a MySQL server
-Clone/download the repository files
+Install and setup PHP and a MySQL server
+Clone||download the repository files
 Copy the files to your web server root directory
 Import the db structure file ( exported with phpMyAdmin )
 Edit the file `functions/general/settings.php` and put your MySQL's server data
