@@ -241,7 +241,7 @@ if(isset($_POST['update_settings'])){
                                                 <div class="form-group">
                                                     <label for="enc_key">API/Encryption Key</label>
                                                     <input type="text" class="form-control" id="enc_key" name="enc_key" aria-describedby="help_enc"
-                                                           value="<?php echo functions::xss_clean($program_data["c_encryption_key"]); ?>"
+                                                           value="<?php echo $program_data["c_encryption_key"]; ?>"
                                                            placeholder="API/Encryption Key">
                                                     <small id="help_enc" class="form-text">This is the API/Encryption key of your requests.</small>
                                                 </div>
@@ -255,14 +255,14 @@ if(isset($_POST['update_settings'])){
                                                 <div class="form-group">
                                                     <label for="download_link">Download Link</label>
                                                     <input type="text" class="form-control" id="download_link" name="download_link" aria-describedby="help_dl"
-                                                           value="<?php echo functions::xss_clean($program_data['c_dl']); ?>"
+                                                           value="<?php echo $program_data['c_dl']; ?>"
                                                            placeholder="Download Link">
                                                     <small id="help_dl" class="form-text">This is the link that will be opened if the version is wrong</small>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="session_expiry_minutes">Session Expiration Minutes</label>
                                                     <input type="number" max="50" class="form-control" id="session_expiry_minutes" name="session_expiry_minutes" aria-describedby="help_sem"
-                                                           value="<?php echo functions::xss_clean($program_data['c_sem']); ?>"
+                                                           value="<?php echo $program_data['c_sem']; ?>"
                                                            placeholder="Session Expiration Minutes">
                                                     <small id="help_sem" class="form-text">This is the number of minutes that the session will last ( maximum value is 50 minutes )</small>
                                                 </div>

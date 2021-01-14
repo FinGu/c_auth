@@ -356,12 +356,12 @@ if(isset($_POST['purge_unused_tokens'])) {
                                                 $all_t_values = api\fetch\fetch_all_tokens($c_con, $app_to_manage);
                                                 foreach($all_t_values as $t_value){ ?>
                                                 <tr>
-                                                    <td><?php echo functions::xss_clean($t_value['c_token']); ?></td>
+                                                    <td><?php echo $t_value['c_token']; ?></td>
                                                     <td><?php echo $t_value['c_days']; ?></td>
                                                     <td><?php echo $t_value['c_rank']; ?></td>
                                                     <td><?php echo $t_value['c_used'] ? 'true' : 'false'; ?></td>
-                                                    <td><?php echo functions::xss_clean($t_value['c_used_by']); ?></td>
-                                                    <td><button class="btn btn-primary text-uppercase" name="delete_token" value="<?php echo encryption::static_encrypt(functions::xss_clean($t_value['c_token'])); ?>"> Delete</button></td>
+                                                    <td><?php echo $t_value['c_used_by']; ?></td>
+                                                    <td><button class="btn btn-primary text-uppercase" name="delete_token" value="<?php echo encryption::static_encrypt($t_value['c_token']); ?>"> Delete</button></td>
                                                 </tr>
                                                 <?php } ?>
                                                 </tbody>

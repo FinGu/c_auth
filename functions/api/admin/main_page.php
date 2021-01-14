@@ -16,7 +16,7 @@ function fetch_data(mysqli_wrapper $c_con, $username){
     $u_q = $c_con->query('SELECT * FROM c_users WHERE c_username=?', [$username]);
 
     if($u_q->num_rows === 0)
-        return 'The user you tried to login doesn\'t exist';
+        return 'The user you tried to login with doesn\'t exist';
 
     return $u_q->fetch_assoc();
 }
@@ -49,7 +49,7 @@ function login(mysqli_wrapper $c_con, $username, $password){
 
     $_SESSION['username'] = functions::xss_clean($username);
     
-    $_SESSION['panel_access'] = md5($username . functions::get_ip());
+    $_SESSION['panel_access'] = md5($_SESSION['username'] . functions::get_ip());
 
     $_SESSION['premium'] = $main_data['c_premium'];
 

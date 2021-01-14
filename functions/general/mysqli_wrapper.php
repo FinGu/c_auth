@@ -19,14 +19,15 @@
  */
 
 class mysqli_wrapper{
-    //private $connection;
-    private mysqli $connection;
+    private $connection, $xss_prevention;
 
-    public function __construct($host, $username, $password, $db_name) {
+    public function __construct($host, $username, $password, $db_name, $xss_prevention = false) {
         $this->connection = new mysqli($host, $username, $password, $db_name);
 
         if(!$this->connection)
             throw new Exception($this->connection->connect_error);
+
+        $this->xss_prevention = $xss_prevention;
     }
 
     public function __destruct() {
@@ -42,6 +43,9 @@ class mysqli_wrapper{
         if(!$stmt)
             throw new Exception($stmt->error);
 
+        if($this->xss_prevention)
+            $this->xss_clean($args);
+
         if (strpos($query, '?') !== false)
             $stmt->bind_param($types, ...$args);
 
@@ -52,6 +56,15 @@ class mysqli_wrapper{
         $stmt->close();
 
         return $result;
+    }
+
+    private function xss_clean(array &$args){
+        foreach($args as &$arg){
+            if(!is_string($arg))
+                continue;
+
+            $arg = htmlentities($arg);       
+        }
     }
 
     public function get_connection(){

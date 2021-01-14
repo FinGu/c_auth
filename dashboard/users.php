@@ -397,18 +397,18 @@ if(isset($_POST['ucf_button'])) {
                                                     $all_p_values = api\fetch\fetch_all_users($c_con, $app_to_manage);
                                                     foreach($all_p_values as $single_p_value) { ?>
                                                                 <tr>
-                                                                    <td><?php echo functions::xss_clean($single_p_value['c_username']); ?></td>
-                                                                    <td><?php echo functions::xss_clean($single_p_value['c_email']); ?></td>
+                                                                    <td><?php echo $single_p_value['c_username']; ?></td>
+                                                                    <td><?php echo $single_p_value['c_email']; ?></td>
                                                                     <td><?php echo date('m/d/Y', strip_tags($single_p_value['c_expires'])); ?></td>
-                                                                    <td><?php echo functions::xss_clean($single_p_value['c_var']); ?></td>
-                                                                    <td><?php echo functions::xss_clean($single_p_value['c_hwid']); ?></td>
+                                                                    <td><?php echo $single_p_value['c_var']; ?></td>
+                                                                    <td><?php echo $single_p_value['c_hwid']; ?></td>
                                                                     <td><?php echo $single_p_value['c_rank']; ?></td>
                                                                     <td><?php echo $single_p_value['c_paused'] ? 'true' : 'false'; ?></td>
                                                                     <td><?php echo $single_p_value['c_banned'] ? 'true' : 'false' ?></td>
-                                                                    <td><?php echo functions::xss_clean($single_p_value['c_ip']); ?></td>
-                                                                    <td><button class="btn btn-primary text-uppercase" name="manage_user" value="<?php echo encryption::static_encrypt(functions::xss_clean($single_p_value['c_username'])) . '|' . (($single_p_value['c_paused'] != '0') ? 'true' : 'false') . '|' . (($single_p_value['c_banned'] == '1') ? 'true' : 'false');
+                                                                    <td><?php echo $single_p_value['c_ip']; ?></td>
+                                                                    <td><button class="btn btn-primary text-uppercase" name="manage_user" value="<?php echo encryption::static_encrypt($single_p_value['c_username']) . '|' . (($single_p_value['c_paused'] != '0') ? 'true' : 'false') . '|' . (($single_p_value['c_banned'] == '1') ? 'true' : 'false');
                                                                     //the reason of this mess is to know if the key is banned/paused or not, to display it correctly on the manage user form ^ ?>"> Manage</button></td>
-                                                                    <td><button class="btn btn-primary text-uppercase" name="delete_user" value="<?php echo encryption::static_encrypt(functions::xss_clean($single_p_value['c_username'])); ?>"> Remove</button>
+                                                                    <td><button class="btn btn-primary text-uppercase" name="delete_user" value="<?php echo encryption::static_encrypt($single_p_value['c_username']); ?>"> Remove</button>
                                                                     </td>
                                                                 </tr>
                                                             <?php } ?>

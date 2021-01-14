@@ -259,10 +259,10 @@ if(isset($_POST["purge_all_logs"])){
                                                 $all_l_values = api\fetch\fetch_all_logs($c_con, $app_to_manage);
                                                 foreach($all_l_values as $l_value){ ?>
                                                 <tr>
-                                                    <td><?php echo functions::xss_clean($l_value["c_username"]); ?></td>
-                                                    <td><?php echo functions::xss_clean($l_value["c_message"]); ?></td>
+                                                    <td><?php echo $l_value["c_username"]; ?></td>
+                                                    <td><?php echo $l_value["c_message"]; ?></td>
                                                     <td><?php echo $l_value["c_time"]; ?></td>
-                                                    <td><?php echo functions::xss_clean($l_value["c_ip"]); ?></td>
+                                                    <td><?php echo $l_value["c_ip"]; ?></td>
                                                 </tr>
                                                 <?php } ?>
                                                 </tbody>
