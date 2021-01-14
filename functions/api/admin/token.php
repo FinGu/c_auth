@@ -15,7 +15,7 @@ function gen_token(mysqli_wrapper $c_con, $program_key, $token_amount, $token_da
 
     $token_amount = filter_var($token_amount, FILTER_SANITIZE_NUMBER_INT);
 
-    if (($limit === 7500 && $token_amount >= 500) || ($limit === 75 && $token_amount >= 75))
+    if (($limit === 7500 && $token_amount > 500) || ($limit === 75 && $token_amount > 75))
         return 'only_500_tokens_per_time';
 
     if($token_type === 4 && strpos($custom_mask, 'X') === false)
