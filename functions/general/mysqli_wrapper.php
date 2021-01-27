@@ -21,7 +21,7 @@
 class mysqli_wrapper{
     private $connection, $xss_prevention;
 
-    public function __construct($host, $username, $password, $db_name, $xss_prevention = false) {
+    public function __construct($host, $username, $password, $db_name, $xss_prevention = false) { //extra
         $this->connection = new mysqli($host, $username, $password, $db_name);
 
         if(!$this->connection)
@@ -41,7 +41,7 @@ class mysqli_wrapper{
         $stmt = $this->connection->prepare($query);
 
         if(!$stmt)
-            throw new Exception($stmt->error);
+            throw new Exception($this->connection->error);
 
         if($this->xss_prevention) //extra
             $this->xss_clean($args); //extra

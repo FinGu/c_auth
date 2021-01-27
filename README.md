@@ -2,7 +2,7 @@
 
 ### Info
 
-&emsp; catAuth.me ( authentication service ) website and classes source code
+&emsp; cAuth.me ( authentication service ) website and classes source code
 
 &emsp; backend done with PHP ([db structure](assets/c_auth.sql))
 

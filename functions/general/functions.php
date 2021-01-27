@@ -34,7 +34,7 @@ class functions {
                     if($mask_arr[$i] === 'X')
                         $mask_arr[$i] = self::random_string(1);
 
-                return implode($mask_arr);
+                return implode('', $mask_arr);
 
             default:
                 return 'unknown';
