@@ -43,8 +43,8 @@ class mysqli_wrapper{
         if(!$stmt)
             throw new Exception($stmt->error);
 
-        if($this->xss_prevention)
-            $this->xss_clean($args);
+        if($this->xss_prevention) //extra
+            $this->xss_clean($args); //extra
 
         if (strpos($query, '?') !== false)
             $stmt->bind_param($types, ...$args);
@@ -57,7 +57,8 @@ class mysqli_wrapper{
 
         return $result;
     }
-
+    
+    /* extra */
     private function xss_clean(array &$args){
         foreach($args as &$arg){
             if(!is_string($arg))
