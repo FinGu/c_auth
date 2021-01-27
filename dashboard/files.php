@@ -303,21 +303,21 @@ if(isset($_POST['delete_file'])){
                                                 $all_files = api\fetch\fetch_all_files($c_con, $app_to_manage);
                                                 foreach($all_files as $single_file){
                                                     ?><tr>
-                                                        <td><?= functions::xss_clean($single_file['c_file_name']) ?></td>
+                                                        <td><?= $single_file['c_file_name'] ?></td>
                                                         <td><?= filesize($single_file['c_file_location']) ?></td>
-                                                        <td><button class="btn btn-primary text-uppercase" name="edit_file" value="<?= encryption::static_encrypt(functions::xss_clean($single_file['c_file_id'])) ?>"> Edit</button></td>
-                                                        <td><button class="btn btn-primary text-uppercase" name="delete_file" value="<?= encryption::static_encrypt(functions::xss_clean($single_file['c_file_id'])) ?>"> Delete</button></td>
+                                                        <td><button class="btn btn-primary text-uppercase" name="edit_file" value="<?= encryption::static_encrypt($single_file['c_file_id']) ?>"> Edit</button></td>
+                                                        <td><button class="btn btn-primary text-uppercase" name="delete_file" value="<?= encryption::static_encrypt($single_file['c_file_id']) ?>"> Delete</button></td>
                                                     </tr>
                                                     <?php } ?>
                                                 </tbody>
                                             </table>
                                         </div>
                                         <!-- /tables -->
-                                        <?php if(isset($_POST["edit_file"])) { ?>
+                                        <?php if(isset($_POST['edit_file'])) { ?>
                                             <div class="form-group">
                                                 <label for="new_file">Select a file : </label>
                                                 <input type="file" class="fallback" id="new_file" name="new_file" >                                            </div>
-                                            <input type="hidden" name="edit_file" value="<?php echo functions::xss_clean($_POST["edit_file"]); ?>"/>
+                                            <input type="hidden" name="edit_file" value="<?php echo functions::xss_clean($_POST['edit_file']); ?>"/>
                                             <button class="btn btn-primary text-uppercase"> Upload </button> <br> <br>
                                         <?php } ?>
                                     </div>

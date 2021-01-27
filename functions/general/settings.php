@@ -8,6 +8,6 @@ date_default_timezone_set('UTC');
 
 function get_connection() { //local connection
     return new mysqli_wrapper(
-        'localhost', 'root', '', 'c_auth'
+        'localhost', 'root', '', 'c_auth', true
     );
 }

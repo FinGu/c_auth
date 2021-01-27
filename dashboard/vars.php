@@ -312,10 +312,10 @@ if(isset($_POST['delete_var'])) {
                                                 $all_vars = api\fetch\fetch_and_decrypt_all_vars($c_con, $app_to_manage);
                                                 foreach($all_vars as $pro_row){
                                                     ?><tr>
-                                                        <td><?php echo functions::xss_clean($pro_row['c_name']); ?></td>
-                                                        <td><?php echo functions::xss_clean($pro_row['c_value']); ?></td>
-                                                        <td><button class="btn btn-primary text-uppercase" name="edit_var" value="<?php echo encryption::static_encrypt(functions::xss_clean($pro_row['c_name'])); ?>"> Edit</button></td>
-                                                        <td><button class="btn btn-primary text-uppercase" name="delete_var" value="<?php echo encryption::static_encrypt(functions::xss_clean($pro_row['c_name'])); ?>"> Delete</button></td>
+                                                        <td><?php echo $pro_row['c_name']; ?></td>
+                                                        <td><?php echo $pro_row['c_value']; ?></td>
+                                                        <td><button class="btn btn-primary text-uppercase" name="edit_var" value="<?php echo encryption::static_encrypt($pro_row['c_name']); ?>"> Edit</button></td>
+                                                        <td><button class="btn btn-primary text-uppercase" name="delete_var" value="<?php echo encryption::static_encrypt($pro_row['c_name']); ?>"> Delete</button></td>
                                                     </tr>
                                                     <?php } ?>
                                                 </tbody>

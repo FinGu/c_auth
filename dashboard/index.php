@@ -278,14 +278,14 @@ if(isset($_POST['manage_app'])) {
                             <?php
                             $all_p_values = api\fetch\fetch_all_programs($c_con, $username);
                             foreach($all_p_values as $pro_row){
-                                $enc_pkey = encryption::static_encrypt(functions::xss_clean($pro_row['c_program_key']));
+                                $enc_pkey = encryption::static_encrypt($pro_row['c_program_key']);
                                 ?>
                             <tr>
                                 <th scope="row"><?php echo $pro_row['c_id']; ?></th>
-                                <td><?php echo functions::xss_clean($pro_row['c_owner']); ?></td>
-                                <td><?php echo functions::xss_clean($pro_row['c_program_name']); ?></td>
+                                <td><?php echo $pro_row['c_owner']; ?></td>
+                                <td><?php echo $pro_row['c_program_name']; ?></td>
                                 <td><?php echo $pro_row['c_program_key']; ?></td>
-                                <td><?php echo functions::xss_clean($pro_row['c_encryption_key']); ?></td>
+                                <td><?php echo $pro_row['c_encryption_key']; ?></td>
                                 <td><?php echo sprintf('%.1f', $pro_row['c_version']);  ?></td>
                                 <td><?php echo $pro_row['c_hwide'] ? 'true' : 'false'; ?></td>
                                 <td><button type="submit" class="btn btn-primary text-uppercase" name="manage_app" value="<?php echo $enc_pkey; ?>">Manage</button></td>
