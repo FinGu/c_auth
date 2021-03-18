@@ -15,7 +15,7 @@ if(!$app_to_manage)
     header('Location: index.php');
 
 if(isset($_POST['mng_submit'])) {
-    $query = static function($to_update) { return "UPDATE c_program_users SET {$to_update}=? WHERE c_program=?"; };
+    $query = static function($to_update) { return "UPDATE c_program_users SET {$to_update}=? WHERE c_program=? AND c_username=?"; };
 
     $user_to_manage = encryption::static_decrypt($_POST['manage_user']);
 
@@ -25,7 +25,7 @@ if(isset($_POST['mng_submit'])) {
     if (!empty($_POST['rank_value'])){
         $rank = filter_var($_POST['rank_value'], FILTER_SANITIZE_NUMBER_INT);
 
-        $c_con->query($query('c_rank'), [$rank, $app_to_manage]);
+        $c_con->query($query('c_rank'), [$rank, $app_to_manage, $user_to_manage]);
     }
 
     if (!empty($_POST['variable_value']))
@@ -34,14 +34,14 @@ if(isset($_POST['mng_submit'])) {
     if (!empty($_POST['password_value'])) {
         $hashed_password = password_hash($_POST['password_value'], PASSWORD_BCRYPT);
 
-        $c_con->query($query('c_password'), [$hashed_password, $app_to_manage]);
+        $c_con->query($query('c_password'), [$hashed_password, $app_to_manage, $user_to_manage]);
     }
 
     if (!empty($_POST['timestamp_value'])) {
         $new_timestamp = $_POST['timestamp_value'];
 
         if(functions::is_valid_timestamp($new_timestamp))
-            $c_con->query($query('c_expires'), [$new_timestamp, $app_to_manage]);
+            $c_con->query($query('c_expires'), [$new_timestamp, $app_to_manage, $user_to_manage]);
     }
 
     if (isset($_POST['pause_user'])) //pause/unpause user
