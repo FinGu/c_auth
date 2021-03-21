@@ -145,7 +145,8 @@ CREATE TABLE `c_program_vars` (
   `c_id` int(11) NOT NULL,
   `c_program` varchar(255) NOT NULL DEFAULT '0',
   `c_name` varchar(255) NOT NULL DEFAULT '0',
-  `c_value` varchar(255) NOT NULL DEFAULT '0'
+  `c_value` varchar(255) NOT NULL DEFAULT '0',
+  `c_enc_key` varchar(255) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
