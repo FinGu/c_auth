@@ -30,9 +30,11 @@ function fetch_all_files(mysqli_wrapper $c_con, $program_key){
 }
 
 function fetch_file_rand_data(){
+    $root_dir = dirname(__DIR__, 3);
+
     $file_id = functions::random_string(16);
 
-    $files_folder = __DIR__.'/../../files/';
+    $files_folder = $root_dir.'/files/';
 
     return array(
         'file_id' => $file_id,
@@ -40,5 +42,4 @@ function fetch_file_rand_data(){
         'new_location' => $files_folder.$file_id.'.file',
         'enc_key' => functions::random_string()
     );
-
 }
