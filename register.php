@@ -2,7 +2,7 @@
 require 'functions/includes.php';
 
 if(isset($_POST['signup'])) {
-    if(functions::captcha_check(':L', $_POST['g-recaptcha-response'])) {
+    if(functions::captcha_check('secret key', $_POST['g-recaptcha-response'])) {
         $register_result = api\main\register(get_connection(), $_POST['username'], $_POST['email'], $_POST['password']);
 
         if ($register_result !== responses::success)

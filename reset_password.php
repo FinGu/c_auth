@@ -6,7 +6,7 @@ $c_con = get_connection();
 $code = $_GET['code'] ?? null;
 
 if(isset($_POST['submit_email'])) {
-    if(functions::captcha_check(':L', $_POST['g-recaptcha-response'])) {
+    if(functions::captcha_check('secret key', $_POST['g-recaptcha-response'])) {
         $reset_result = api\main\send_reset_email($c_con, $_POST['username']);
 
         if($reset_result !== responses::success)
