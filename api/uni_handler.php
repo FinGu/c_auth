@@ -1,7 +1,7 @@
 <?php
 require '../functions/includes.php';
 
-require 'handler_helper';
+require 'handler_helper.php';
 
 //handler for the universal api
 $c_con = get_connection();
