@@ -36,7 +36,7 @@ function create_var(mysqli_wrapper $c_con, $program_key, $var_name, $var_value){
 
     $enc_key = functions::random_string(16);
 
-    $var_value = encryption::static_encrypt($var_value, $enc_key);
+    $var_value = encryption::static_encrypt(functions::xss_clean($var_value), $enc_key);
 
     $c_con->query('INSERT INTO c_program_vars (c_program, c_name, c_value, c_enc_key) VALUES(?, ?, ?, ?)', [$program_key, $var_name, $var_value, $enc_key]);
 
