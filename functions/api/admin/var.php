@@ -51,7 +51,7 @@ function update_var(mysqli_wrapper $c_con, $program_key, $var_name, $new_var_val
 
     $enc_key = $var_data['c_enc_key'] != '0' ? $var_data['c_enc_key'] : functions::random_string(16);
 
-    $new_var_value = encryption::static_encrypt($new_var_value, $enc_key);
+    $new_var_value = encryption::static_encrypt(functions::xss_clean($new_var_value), $enc_key);
 
     $c_con->query('UPDATE c_program_vars SET c_value=?, c_enc_key=? WHERE c_program=? AND c_name=?', [$new_var_value, $enc_key, $program_key, $var_name]);
 
